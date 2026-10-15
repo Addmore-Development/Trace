@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Addmore | Know where every asset is</title>
+  <meta name="description" content="Addmore is a simple asset register for South African organisations. Give every laptop, tool and vehicle a tag, scan it with any phone, and always know who has it and where it is.">
+  <meta name="theme-color" content="#0F1B2D">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_ZA">
+  <meta property="og:title" content="Addmore | Know where every asset is">
+  <meta property="og:description" content="A simple asset register for South African schools, clinics, businesses and municipalities. Tag it, scan it, know where it is.">
+  <!-- PLACEHOLDER: add an og:image (1200x630) and og:url once the site has a domain -->
+
+  <!-- Fonts: only the weights used on this page -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap">
+
+  <!-- Runs before first paint: marks JS as available and applies the saved or system theme (no flash) -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      var theme = null;
+      try { theme = localStorage.getItem('addmore-theme'); } catch (e) {}
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      root.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <style>
+/* ==========================================================================
+   Addmore landing page
+   1 Tokens · 2 Reset · 3 Base · 4 Layout · 5 Components · 6 Sections
+   7 Utilities · 8 Dark mode · 9 Media queries · 10 Reduced motion
+   ========================================================================== */
+
+/* 1. TOKENS ================================================================ */
+:root {
+  /* Brand */
+  --ink: #0F1B2D;
+  --navy: #16263F;
+  --primary: #0B7A87;
+  --primary-hover: #095F69;
+  --on-primary: #FFFFFF;
+  --accent: #E08A1E;
+  --accent-hover: #F0A03C;
+  --on-accent: #0F1B2D;
+
+  /* Surfaces and text (light mode) */
+  --bg: #F7F4EE;
+  --bg-alt: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-soft: #FBF9F4;
+  --surface-on-alt: #F7F4EE;
+  --border: #E7E2D8;
+  --border-strong: #CFC8B9;
+  --text: #1B2433;
+  --muted: #5B6577;
+  --link: #0B7A87;
+  --link-hover: #095F69;
+  --focus: #0B7A87;
+
+  /* Always-dark surfaces (header, final CTA, footer) */
+  --on-dark: #F2F5FA;
+  --on-dark-muted: #B6C1D3;
+  --dark-border: #2A3C58;
+
+  /* Status */
+  --status-active: #1E8E5A;
+  --status-assigned: #2F6FDE;
+  --status-repair: #B7791F;
+  --status-lost: #C0392B;
+
+  /* Physical asset tag */
+  --tag-bg: #FFF6E2;
+  --tag-border: #D8CBA8;
+  --tag-ink: #2B2410;
+  --hole: var(--surface);
+
+  /* Type */
+  --font-head: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Shape and space */
+  --radius-s: 8px;
+  --radius: 14px;
+  --radius-l: 16px;
+  --container: 1180px;
+  --shadow-lift: 0 18px 40px -22px rgba(15, 27, 45, 0.35);
+}
+
+/* 2. RESET ================================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body, h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+table { border-collapse: collapse; width: 100%; }
+[hidden] { display: none; }
+
+/* 3. BASE ================================================================== */
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-head);
+  color: var(--text);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(2.5rem, 1.7rem + 3.6vw, 4.25rem); font-weight: 800; line-height: 1.1; }
+h2 { font-size: clamp(1.75rem, 1.35rem + 1.8vw, 2.75rem); font-weight: 700; }
+h3 { font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem); font-weight: 700; line-height: 1.25; }
+p { text-wrap: pretty; }
+
+a { color: var(--link); text-underline-offset: 0.2em; }
+a:hover { color: var(--link-hover); }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+.site-header :focus-visible,
+.cta :focus-visible,
+.site-footer :focus-visible { outline-color: var(--on-dark); }
+
+::selection { background: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+/* 4. LAYOUT ================================================================ */
+.container { width: min(100% - 2rem, var(--container)); margin-inline: auto; }
+
+.section { padding-block: clamp(3.5rem, 8vw, 6rem); }
+.section--alt {
+  background: var(--bg-alt);
+  border-block: 1px solid var(--border);
+  --hole: var(--surface-on-alt);
+}
+.section--alt .card { background: var(--surface-on-alt); }
+
+.section__head { max-width: 46rem; margin-bottom: clamp(2rem, 5vw, 3.25rem); }
+.section__head--center { margin-inline: auto; text-align: center; }
+.section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--link);
+}
+.section__lead { margin-top: 1rem; font-size: 1.125rem; color: var(--muted); }
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-s);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus { top: 1rem; }
+
+/* 5. COMPONENTS ============================================================ */
+
+/* Icons and the hidden SVG sprite */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.icon {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.qr { display: block; fill: currentColor; stroke: none; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s, color 0.2s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn--lg { min-height: 52px; padding: 0.8rem 1.5rem; font-size: 1.0625rem; }
+.btn--block { width: 100%; }
+.btn--primary { background: var(--primary); color: var(--on-primary); }
+.btn--primary:hover { background: var(--primary-hover); color: var(--on-primary); }
+.btn--ghost { border-color: var(--border-strong); background: transparent; color: var(--text); }
+.btn--ghost:hover { background: var(--surface); border-color: var(--text); color: var(--text); }
+.btn--accent { background: var(--accent); color: var(--on-accent); }
+.btn--accent:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+/* Brand */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  color: var(--on-dark);
+  text-decoration: none;
+}
+.brand:hover { color: var(--on-dark); }
+.brand__mark { width: 32px; height: 32px; }
+.brand__name {
+  font-family: var(--font-head);
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.brand__more { color: var(--accent); }
+
+/* Asset tag chip (signature element) */
+.tag-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem 0.2rem 1.4rem;
+  border: 1px solid var(--tag-border);
+  border-radius: 6px;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.tag-chip::before {
+  content: "";
+  position: absolute;
+  left: 0.45rem;
+  top: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: -0.25rem;
+  border-radius: 50%;
+  background: var(--hole);
+  box-shadow: inset 0 0 0 1px var(--tag-border);
+}
+.tag-chip--lg {
+  padding: 0.45rem 1rem 0.45rem 1.8rem;
+  font-size: 1rem;
+  box-shadow: var(--shadow-lift);
+}
+.tag-chip--lg::before { left: 0.6rem; width: 0.65rem; height: 0.65rem; margin-top: -0.325rem; }
+.tag-chip--lg::after {
+  content: "";
+  width: 1.6rem;
+  height: 1rem;
+  margin-left: 0.75rem;
+  background: repeating-linear-gradient(90deg, var(--tag-ink) 0 2px, transparent 2px 4px, var(--tag-ink) 4px 5px, transparent 5px 8px);
+}
+
+/* Status chip: always an icon plus a label, never colour alone */
+.status {
+  --s: var(--status-active);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--s) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--s) 12%, var(--surface));
+  color: var(--text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.status .icon { width: 1em; height: 1em; color: var(--s); }
+.status--active { --s: var(--status-active); }
+.status--assigned { --s: var(--status-assigned); }
+.status--repair { --s: var(--status-repair); }
+.status--lost { --s: var(--status-lost); }
+
+.price { font-family: var(--font-mono); font-size: 0.875em; white-space: nowrap; }
+
+/* Cards */
+.card {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  transition: transform 0.25s, border-color 0.25s;
+}
+.card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+
+.icon-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--link);
+}
+.icon-badge .icon { width: 1.375rem; height: 1.375rem; }
+
+.pill {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* Header and navigation */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--ink);
+  border-bottom: 1px solid var(--dark-border);
+  color: var(--on-dark);
+}
+.site-header__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+}
+.site-header__actions { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
+
+.nav { order: 3; width: 100%; }
+.nav__list { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.nav__link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-s);
+  color: var(--on-dark-muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+.nav__link:hover { background: rgba(255, 255, 255, 0.07); color: var(--on-dark); }
+.nav__item--mobile { display: none; }
+
+.js .nav {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 0.5rem 1rem 1rem;
+  background: var(--ink);
+  border-bottom: 1px solid var(--dark-border);
+}
+.js .nav.is-open { display: block; }
+.js .nav__list { flex-direction: column; }
+.js .nav__item--mobile { display: block; }
+.js .nav__item--mobile .btn { width: 100%; margin-top: 0.5rem; }
+
+.icon-btn {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--dark-border);
+  border-radius: 10px;
+  color: var(--on-dark);
+  transition: background-color 0.2s;
+}
+.icon-btn:hover { background: rgba(255, 255, 255, 0.08); }
+.js .icon-btn { display: inline-grid; }
+.theme-toggle__sun { display: none; }
+.menu-toggle__close { display: none; }
+.menu-toggle[aria-expanded="true"] .menu-toggle__open { display: none; }
+.menu-toggle[aria-expanded="true"] .menu-toggle__close { display: block; }
+
+.login-link {
+  display: none;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  color: var(--on-dark);
+  font-weight: 500;
+  text-decoration: none;
+}
+.login-link:hover { color: var(--accent); }
+.header-cta { display: none; }
+
+/* Form fields */
+.field__label { display: block; margin-bottom: 0.4rem; font-weight: 600; }
+.field__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+}
+.field__input::placeholder { color: var(--muted); opacity: 1; }
+.field__input:focus-visible { outline-offset: 2px; }
+
+/* Filter chips and segmented toggle */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.chip:hover { border-color: var(--text); }
+.chip[aria-pressed="true"] { border-color: var(--primary); background: var(--primary); color: var(--on-primary); }
+
+.toggle {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 9px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.toggle__btn[aria-pressed="true"] { background: var(--primary); color: var(--on-primary); }
+.toggle__badge {
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Tabs */
+.tabs__list { display: none; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+.js .tabs__list { display: flex; }
+.tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  font-weight: 600;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.tabs__tab:hover { border-color: var(--text); }
+.tabs__tab[aria-selected="true"] { border-color: var(--primary); background: var(--primary); color: var(--on-primary); }
+.tabs__panel {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+}
+.tabs__panel[hidden] { display: none; }
+.tabs__tags { display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: start; }
+
+/* Accordion */
+.faq__item { border-bottom: 1px solid var(--border-strong); }
+.faq__item:first-child { border-top: 1px solid var(--border-strong); }
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  min-height: 56px;
+  padding: 1rem 0;
+  font-family: var(--font-head);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-align: left;
+}
+.faq__q .icon { transition: transform 0.25s; color: var(--link); }
+.faq__q[aria-expanded="true"] .icon { transform: rotate(180deg); }
+.faq__a { padding-bottom: 1.25rem; max-width: 42rem; color: var(--text); }
+
+/* Scroll reveal (only when JS is available) */
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.js .reveal.is-visible { opacity: 1; transform: none; }
+.js .reveal--d1 { transition-delay: 0.08s; }
+.js .reveal--d2 { transition-delay: 0.16s; }
+.js .reveal--d3 { transition-delay: 0.24s; }
+
+/* 6. SECTIONS ============================================================== */
+
+/* 6.1 Hero */
+.hero { position: relative; padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 8vw, 6.5rem); overflow: clip; --hole: var(--bg); }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 85%);
+  mask-image: linear-gradient(to bottom, #000, transparent 85%);
+}
+.hero__grid { position: relative; display: grid; gap: 3.5rem; }
+.hero__lead { margin-top: 1.25rem; max-width: 34rem; font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem); color: var(--muted); }
+.hero__mark {
+  background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 45%, transparent) 62%);
+  padding-inline: 0.1em;
+}
+.hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+.trust { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin-top: 1.75rem; font-size: 0.9375rem; color: var(--muted); }
+.trust li { display: inline-flex; align-items: center; gap: 0.5rem; }
+.trust li + li::before { content: ""; width: 4px; height: 4px; margin-right: 0.75rem; border-radius: 50%; background: var(--border-strong); }
+
+.hero__visual { position: relative; display: grid; padding-top: 1.5rem; }
+.hero__tag { position: absolute; top: 0; left: 1rem; z-index: 3; transform: rotate(-4deg); }
+
+/* Dashboard mockup */
+.mock { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-l); background: var(--surface); box-shadow: var(--shadow-lift); }
+.mock__bar { display: flex; align-items: center; gap: 0.35rem; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border); background: var(--surface-soft); }
+.mock__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong); }
+.mock__tabs { display: flex; gap: 0.25rem; margin-left: 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--muted); }
+.mock__tabs span { padding: 0.15rem 0.55rem; border-radius: 6px; }
+.mock__tabs .is-current { background: color-mix(in srgb, var(--primary) 14%, transparent); color: var(--text); }
+.mock__stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; padding: 0.75rem; }
+.stat { padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); }
+.stat__label { display: block; font-size: 0.75rem; color: var(--muted); }
+.stat__value { font-family: var(--font-head); font-size: 1.3125rem; font-weight: 800; line-height: 1.2; }
+.mock__table th, .mock__table td { padding: 0.5rem; border-top: 1px solid var(--border); font-size: 0.8125rem; text-align: left; vertical-align: middle; }
+.mock__table th { color: var(--muted); font-size: 0.75rem; font-weight: 600; }
+.mock__table th:first-child, .mock__table td:first-child { padding-left: 0.75rem; }
+.mock__table th:last-child, .mock__table td:last-child { padding-right: 0.75rem; }
+.mock__table .col-price { display: none; }
+
+/* Phone mockup */
+.phone {
+  position: relative;
+  z-index: 2;
+  justify-self: end;
+  width: min(220px, 62vw);
+  margin: -3.5rem 0.5rem 0 0;
+  padding: 6px;
+  border: 1px solid var(--dark-border);
+  border-radius: 32px;
+  background: #0A1220;
+  box-shadow: var(--shadow-lift);
+}
+.phone__screen { display: grid; gap: 0.6rem; padding: 0.75rem 0.75rem 1rem; border-radius: 26px; background: var(--surface); color: var(--text); }
+.phone__top { display: flex; justify-content: space-between; font-size: 0.6875rem; font-weight: 600; color: var(--muted); }
+.phone__title { font-family: var(--font-head); font-size: 0.9375rem; font-weight: 700; text-align: center; }
+.phone__viewfinder { position: relative; display: grid; place-items: center; overflow: hidden; aspect-ratio: 1; border-radius: 14px; background: var(--ink); }
+.phone__qr { width: 58%; color: var(--on-dark); }
+.phone__corner { position: absolute; width: 22px; height: 22px; border: 3px solid var(--accent); }
+.phone__corner--tl { top: 10px; left: 10px; border-right: 0; border-bottom: 0; border-top-left-radius: 6px; }
+.phone__corner--tr { top: 10px; right: 10px; border-left: 0; border-bottom: 0; border-top-right-radius: 6px; }
+.phone__corner--bl { bottom: 10px; left: 10px; border-right: 0; border-top: 0; border-bottom-left-radius: 6px; }
+.phone__corner--br { bottom: 10px; right: 10px; border-left: 0; border-top: 0; border-bottom-right-radius: 6px; }
+.phone__scanline { position: absolute; left: 12%; right: 12%; top: 16%; height: 2px; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: scan 3.2s ease-in-out infinite; }
+.phone__result { display: grid; justify-items: start; gap: 0.35rem; padding: 0.6rem; border: 1px solid var(--border); border-radius: 12px; font-size: 0.75rem; --hole: var(--surface); }
+.phone__name { font-size: 0.875rem; font-weight: 700; line-height: 1.3; }
+.phone__meta { color: var(--muted); }
+.phone__ok { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; font-weight: 600; }
+
+/* "Scan confirmed" tick animation */
+.tick { width: 26px; height: 26px; color: var(--status-active); fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.tick__ring { stroke-dasharray: 70; stroke-dashoffset: 70; animation: tick-ring 4.2s ease infinite; }
+.tick__check { stroke-dasharray: 17; stroke-dashoffset: 17; animation: tick-check 4.2s ease infinite; }
+
+@keyframes scan { 0%, 100% { top: 16%; } 50% { top: 82%; } }
+@keyframes tick-ring { 0%, 8% { stroke-dashoffset: 70; } 32%, 88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 70; } }
+@keyframes tick-check { 0%, 28% { stroke-dashoffset: 17; } 46%, 88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 17; } }
+
+/* 6.2 Social proof strip */
+.proof { padding-block: 2rem; border-block: 1px solid var(--border); background: var(--bg-alt); text-align: center; }
+.proof__title { font-weight: 600; color: var(--muted); }
+.proof__logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 1.25rem; }
+.proof__logo { display: grid; place-items: center; min-width: 8.5rem; min-height: 44px; padding: 0.4rem 1rem; border: 1px dashed var(--border-strong); border-radius: var(--radius-s); color: var(--muted); font-size: 0.875rem; font-weight: 500; }
+.proof__note { margin-top: 0.75rem; font-size: 0.875rem; color: var(--muted); }
+
+/* 6.3 Problem and solution */
+.pairs { display: grid; gap: 1rem; }
+.pair { display: grid; gap: 1rem; padding: 0; overflow: hidden; }
+.pair__problem, .pair__answer { padding: 1.5rem; }
+.pair__answer { border-top: 1px solid var(--border); background: color-mix(in srgb, var(--primary) 7%, transparent); }
+.pair__label { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; font-size: 0.875rem; font-weight: 600; }
+.pair__label--problem { color: var(--status-lost); }
+.pair__label--answer { color: var(--link); }
+.pair__problem p { color: var(--muted); }
+
+/* 6.4 Features bento */
+.bento { display: grid; gap: 1rem; }
+.bento__card { display: flex; flex-direction: column; gap: 0.5rem; }
+.bento__card p { color: var(--muted); }
+.bento__visual { margin-top: auto; padding-top: 1rem; }
+.bento__card--dark { border-color: var(--dark-border); background: var(--navy); color: var(--on-dark); }
+.section--alt .bento__card--dark { background: var(--navy); }
+.bento__card--dark h3 { color: var(--on-dark); }
+.bento__card--dark p { color: var(--on-dark-muted); }
+.bento__card--dark .icon-badge { background: rgba(224, 138, 30, 0.16); color: var(--accent); }
+.bento__card--dark .status { color: var(--on-dark); background: color-mix(in srgb, var(--s) 18%, var(--navy)); }
+
+.mini-rows { display: grid; gap: 0.5rem; }
+.mini-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; padding: 0.5rem 0.65rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 0.875rem; }
+.mini-row__name { flex: 1 1 8rem; font-weight: 500; }
+
+.scan-demo { display: flex; align-items: center; gap: 1rem; }
+.scan-demo__qr { width: 76px; padding: 8px; border: 1px solid var(--tag-border); border-radius: 8px; background: var(--tag-bg); color: var(--tag-ink); }
+.scan-demo__text { display: grid; gap: 0.35rem; justify-items: start; font-size: 0.875rem; color: var(--muted); }
+
+.roles { display: grid; gap: 0.5rem; }
+.roles__item { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px dashed var(--border-strong); font-size: 0.875rem; }
+.roles__item:last-child { border-bottom: 0; padding-bottom: 0; }
+.roles__name { font-weight: 600; }
+.roles__desc { color: var(--muted); text-align: right; }
+
+.fieldset-demo { display: grid; gap: 0.75rem; }
+.fieldset-demo__type { margin-bottom: 0.35rem; font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
+.fieldset-demo__pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.timeline { position: relative; display: grid; gap: 0.9rem; padding-left: 1.25rem; font-size: 0.875rem; }
+.timeline::before { content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 2px; background: var(--border-strong); }
+.timeline__item { position: relative; }
+.timeline__item::before { content: ""; position: absolute; left: -1.25rem; top: 0.4em; width: 10px; height: 10px; border: 2px solid var(--primary); border-radius: 50%; background: var(--surface-on-alt); }
+.timeline__item strong { display: block; font-weight: 600; }
+.timeline__item span { color: var(--muted); }
+
+.status-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.bars { display: flex; align-items: flex-end; gap: 0.5rem; height: 84px; padding-bottom: 0.25rem; border-bottom: 1px solid var(--border-strong); }
+.bars__bar { flex: 1; border-radius: 4px 4px 0 0; background: color-mix(in srgb, var(--primary) 75%, transparent); }
+.bars__bar--1 { height: 92%; }
+.bars__bar--2 { height: 64%; }
+.bars__bar--3 { height: 48%; }
+.bars__bar--4 { height: 76%; }
+.bars__bar--5 { height: 30%; }
+.bars__caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.6rem; font-size: 0.8125rem; color: var(--muted); }
+
+.sync-demo { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.sync-demo__arrow { color: var(--on-dark-muted); }
+
+/* 6.5 How it works */
+.steps { display: grid; gap: 1.25rem; counter-reset: step; }
+.step { position: relative; display: grid; gap: 0.75rem; align-content: start; }
+.step__num { display: inline-flex; align-items: center; justify-self: start; padding: 0.1rem 0.6rem; border-radius: 6px; background: var(--ink); color: var(--on-dark); font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 500; }
+.step__art { display: grid; place-items: center; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.step p { color: var(--muted); }
+
+.ill { width: 100%; max-width: 200px; height: auto; }
+.ill__box { fill: var(--surface-soft); stroke: var(--border-strong); stroke-width: 2; }
+.ill__line { fill: none; stroke: var(--border-strong); stroke-width: 2; stroke-linecap: round; }
+.ill__dot { fill: var(--border-strong); }
+.ill__field { fill: var(--border); }
+.ill__pri { fill: var(--primary); }
+.ill__tag { fill: var(--tag-bg); stroke: var(--tag-border); stroke-width: 1.5; }
+.ill__acc { fill: var(--accent); }
+.ill__plus { fill: none; stroke: var(--on-accent); stroke-width: 2.5; stroke-linecap: round; }
+.ill__qr { color: var(--text); }
+.ill__qr--tag { color: var(--tag-ink); }
+.ill__scan { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.ill__ok { fill: var(--status-active); }
+.ill__check { fill: none; stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 6.6 Built for South African organisations */
+.facts { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
+.fact p { margin-top: 0.4rem; color: var(--muted); }
+.tabs { max-width: 62rem; }
+.tabs__panel h3 { margin-bottom: 0.5rem; }
+.tabs__panel p { color: var(--muted); }
+
+/* 6.7 Interactive demo */
+.demo { padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-l); background: var(--surface); --hole: var(--surface); }
+.demo__controls { display: none; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem; }
+.js .demo__controls { display: flex; }
+.demo__filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.demo__count { margin-bottom: 0.75rem; font-size: 0.9375rem; color: var(--muted); }
+.demo__scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+.demo__table th, .demo__table td { padding: 0.75rem; border-top: 1px solid var(--border); text-align: left; vertical-align: middle; font-size: 0.9375rem; }
+.demo__table thead th { border-top: 0; background: var(--surface-soft); color: var(--muted); font-size: 0.8125rem; font-weight: 600; }
+.demo__table .col-loc, .demo__table .col-user, .demo__table .col-price { display: none; }
+.asset__name { display: block; font-weight: 500; }
+.asset__sub { display: block; font-size: 0.8125rem; color: var(--muted); }
+.sub__price { display: block; font-family: var(--font-mono); }
+.demo__empty td { padding: 2rem 1rem; text-align: center; color: var(--muted); }
+.demo__note { margin-top: 0.75rem; font-size: 0.875rem; color: var(--muted); }
+
+/* 6.8 Pricing */
+.pricing__toggle { display: none; justify-content: center; margin-bottom: 2rem; }
+.js .pricing__toggle { display: flex; }
+.plans { display: grid; gap: 1rem; max-width: 34rem; margin-inline: auto; }
+.plan { position: relative; display: flex; flex-direction: column; gap: 1rem; }
+.plan--featured { border: 2px solid var(--primary); }
+.plan--featured:hover { border-color: var(--primary); }
+.plan__badge { position: absolute; top: -0.9rem; left: 1.5rem; padding: 0.2rem 0.75rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 0.8125rem; font-weight: 700; }
+.plan__name { font-size: 1.25rem; }
+.plan__for { margin-top: 0.25rem; font-size: 0.9375rem; color: var(--muted); }
+.plan__price { display: flex; align-items: baseline; gap: 0.4rem; font-family: var(--font-head); }
+.plan__amount { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.plan__unit { color: var(--muted); font-family: var(--font-body); font-size: 0.9375rem; }
+.plan__note { min-height: 1.5rem; font-size: 0.875rem; color: var(--muted); }
+.plan__list { display: grid; gap: 0.6rem; margin-bottom: 0.5rem; }
+.plan__list li { display: flex; align-items: flex-start; gap: 0.6rem; }
+.plan__list .icon { margin-top: 0.2rem; color: var(--status-active); }
+.plan .btn { margin-top: auto; }
+.pricing__note { margin-top: 1.5rem; text-align: center; font-size: 0.875rem; color: var(--muted); }
+
+/* 6.9 FAQ */
+.faq { max-width: 48rem; margin-inline: auto; }
+
+/* 6.10 Final call to action */
+.cta { position: relative; overflow: clip; padding-block: clamp(3.5rem, 8vw, 6rem); background: var(--navy); color: var(--on-dark); --hole: var(--navy); }
+.cta::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--accent); }
+.cta__inner { position: relative; max-width: 40rem; }
+.cta h2 { color: var(--on-dark); }
+.cta__lead { margin-top: 1rem; font-size: 1.125rem; color: var(--on-dark-muted); }
+.cta__form { display: grid; gap: 0.75rem; margin-top: 2rem; }
+.cta .field__label { color: var(--on-dark); }
+.cta .field__input { border-color: var(--dark-border); background: var(--ink); color: var(--on-dark); }
+.cta .field__input::placeholder { color: var(--on-dark-muted); }
+.cta__msg { min-height: 1.5rem; margin-top: 0.75rem; font-weight: 500; }
+.cta__msg.is-error { color: #FFB4A8; }
+.cta__msg.is-success { color: #8FE3B6; }
+.cta__tags { display: none; }
+
+/* 6.11 Footer */
+.site-footer { padding-block: 3.5rem 2rem; background: var(--ink); border-top: 1px solid var(--dark-border); color: var(--on-dark-muted); }
+.footer__grid { display: grid; gap: 2rem; }
+.footer__about p { max-width: 24rem; margin-top: 0.75rem; }
+.footer__title { margin-bottom: 0.5rem; color: var(--on-dark); font-family: var(--font-head); font-size: 0.9375rem; font-weight: 700; }
+.footer__link { display: inline-flex; align-items: center; min-height: 44px; color: var(--on-dark-muted); text-decoration: none; }
+.footer__link:hover { color: var(--accent); }
+.footer__contact { display: grid; gap: 0.25rem; }
+.footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--dark-border); font-size: 0.9375rem; }
+
+/* 7. UTILITIES ============================================================= */
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* 8. DARK MODE ============================================================= */
+:root[data-theme="dark"] {
+  --bg: #0F1B2D;
+  --bg-alt: #122036;
+  --surface: #16263F;
+  --surface-soft: #1A2C47;
+  --surface-on-alt: #16263F;
+  --border: #263856;
+  --border-strong: #3A4F70;
+  --text: #E9EDF4;
+  --muted: #A8B3C5;
+  --link: #4CC0CD;
+  --link-hover: #7BD3DC;
+  --focus: #7BD3DC;
+  --status-active: #3DD598;
+  --status-assigned: #6FA0FF;
+  --status-repair: #F0B54A;
+  --status-lost: #FF7A6B;
+  --shadow-lift: 0 18px 40px -22px rgba(0, 0, 0, 0.7);
+}
+:root[data-theme="dark"] .theme-toggle__moon { display: none; }
+:root[data-theme="dark"] .theme-toggle__sun { display: block; }
+:root[data-theme="dark"] .phone { background: #070E1A; }
+:root[data-theme="dark"] .hero::before { opacity: 0.35; }
+:root[data-theme="dark"] .pair__label--problem { color: var(--status-lost); }
+
+/* 9. MEDIA QUERIES ========================================================= */
+@media (min-width: 480px) {
+  .header-cta { display: inline-flex; }
+  .js .nav__item--mobile--cta { display: none; }
+  .mock__table .col-price { display: table-cell; }
+}
+
+@media (min-width: 560px) {
+  .mock__stats { grid-template-columns: repeat(4, 1fr); }
+  .demo__table .col-price { display: table-cell; }
+  .sub__price { display: none; }
+}
+
+@media (min-width: 640px) {
+  .bento { grid-template-columns: repeat(2, 1fr); }
+  .bento__card--s7, .bento__card--s5 { grid-column: span 2; }
+  .steps { grid-template-columns: repeat(2, 1fr); }
+  .facts { grid-template-columns: repeat(3, 1fr); }
+  .tabs__panel { grid-template-columns: 1.3fr 1fr; padding: 2rem; }
+  .demo { padding: 1.75rem; }
+  .demo__controls { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .demo__search { width: min(100%, 22rem); }
+  .cta__form { grid-template-columns: 1fr auto; align-items: end; }
+}
+
+@media (min-width: 720px) {
+  .demo__table .col-loc { display: table-cell; }
+  .asset__sub { display: none; }
+}
+
+@media (min-width: 960px) and (max-width: 1199px) {
+  .mock__table .col-price { display: none; }
+}
+
+@media (min-width: 960px) {
+  .site-header__inner { flex-wrap: nowrap; gap: 1.5rem; padding-block: 0.6rem; }
+  .nav, .js .nav { order: 0; display: block; position: static; width: auto; padding: 0; background: none; border: 0; }
+  .nav__list, .js .nav__list { flex-direction: row; flex-wrap: nowrap; gap: 0.1rem; }
+  .js .nav__item--mobile { display: none; }
+  .login-link { display: inline-flex; }
+  .js .menu-toggle { display: none; }
+
+  .hero__grid { grid-template-columns: 1fr 1.4fr; align-items: center; gap: 3rem; }
+  .hero__visual { padding-bottom: 2.5rem; }
+  .mock { margin-right: 12.5rem; }
+  .phone { position: absolute; right: 0; bottom: 0; width: 200px; margin: 0; }
+
+  .pairs { grid-template-columns: repeat(3, 1fr); }
+  .bento { grid-template-columns: repeat(12, 1fr); }
+  .bento__card--s7 { grid-column: span 7; }
+  .bento__card--s5 { grid-column: span 5; }
+  .bento__card--s4 { grid-column: span 4; }
+  .steps { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .step:not(:last-child)::after { content: ""; position: absolute; top: 5.5rem; right: -1.25rem; width: 1rem; border-top: 2px dashed var(--border-strong); }
+  .demo__table .col-user { display: table-cell; }
+  .plans { grid-template-columns: repeat(3, 1fr); max-width: none; align-items: stretch; }
+  .cta__tags { display: block; }
+  .cta__tag { position: absolute; transform: rotate(6deg); opacity: 0.9; }
+  .cta__tag--a { top: 22%; right: 6%; }
+  .cta__tag--b { top: 50%; right: 14%; transform: rotate(-5deg); }
+  .cta__tag--c { top: 76%; right: 4%; transform: rotate(3deg); }
+  .footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; }
+}
+
+/* 10. REDUCED MOTION ======================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .btn, .card, .chip, .tabs__tab, .faq__q .icon { transition: none; }
+  .btn:hover, .card:hover { transform: none; }
+  .phone__scanline { animation: none; top: 50%; }
+  .tick__ring, .tick__check { animation: none; stroke-dashoffset: 0; }
+}
+  </style>
+</head>
+
+<body>
+  <!-- SVG sprite: icons and the QR pattern, reused across the page -->
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="logo" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="8" fill="#0B7A87"/>
+      <path d="M16 9v14M9 16h14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <circle cx="25" cy="7" r="2.5" fill="#E08A1E"/>
+    </symbol>
+    <symbol id="qr" viewBox="0 0 21 21">
+      <path fill-rule="evenodd" d="M0 0h7v7H0zM1 1v5h5V1zM2 2h3v3H2zM14 0h7v7h-7zM15 1v5h5V1zM16 2h3v3h-3zM0 14h7v7H0zM1 15v5h5v-5zM2 16h3v3H2z"/>
+      <path d="M9 0h2v1H9zM12 0h1v1h-1zM8 1h1v1H8zM10 1h2v1h-2zM9 2h1v1H9zM11 2h2v1h-2zM8 3h2v1H8zM12 3h1v1h-1zM10 4h2v1h-2zM8 5h1v1H8zM11 5h1v1h-1zM9 6h2v1H9zM12 6h1v1h-1zM8 7h1v1H8zM10 7h1v1h-1zM0 8h2v1H0zM3 8h2v1H3zM6 8h1v1H6zM8 8h2v1H8zM11 8h1v1h-1zM13 8h2v1h-2zM16 8h1v1h-1zM18 8h3v1h-3zM1 9h2v1H1zM5 9h1v1H5zM7 9h1v1H7zM10 9h1v1h-1zM12 9h1v1h-1zM15 9h1v1h-1zM17 9h1v1h-1zM19 9h1v1h-1zM0 10h1v1H0zM2 10h2v1H2zM6 10h2v1H6zM9 10h1v1H9zM11 10h2v1h-2zM14 10h1v1h-1zM16 10h2v1h-2zM20 10h1v1h-1zM1 11h1v1H1zM4 11h2v1H4zM8 11h1v1H8zM10 11h1v1h-1zM13 11h1v1h-1zM15 11h1v1h-1zM18 11h2v1h-2zM0 12h2v1H0zM3 12h1v1H3zM6 12h1v1H6zM9 12h2v1H9zM12 12h1v1h-1zM14 12h2v1h-2zM17 12h1v1h-1zM20 12h1v1h-1zM8 13h2v1H8zM11 13h1v1h-1zM13 13h1v1h-1zM15 13h2v1h-2zM18 13h1v1h-1zM9 14h1v1H9zM12 14h3v1h-3zM17 14h1v1h-1zM19 14h2v1h-2zM8 15h1v1H8zM10 15h2v1h-2zM15 15h1v1h-1zM18 15h1v1h-1zM9 16h2v1H9zM12 16h1v1h-1zM14 16h1v1h-1zM16 16h2v1h-2zM20 16h1v1h-1zM8 17h1v1H8zM11 17h1v1h-1zM13 17h2v1h-2zM19 17h1v1h-1zM9 18h1v1H9zM12 18h1v1h-1zM15 18h2v1h-2zM18 18h1v1h-1zM20 18h1v1h-1zM8 19h2v1H8zM11 19h1v1h-1zM13 19h1v1h-1zM17 19h1v1h-1zM19 19h1v1h-1zM10 20h1v1h-1zM12 20h1v1h-1zM14 20h2v1h-2zM18 20h3v1h-3z"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+    <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14 0M1.4 9a16 16 0 0 1 21.2 0M8.5 16.1a6 6 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-school" viewBox="0 0 24 24"><path d="M2 9 12 4l10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/></symbol>
+    <symbol id="i-clinic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="i-landmark" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10M9 21V10M15 21V10M19 21V10M2 10l10-6 10 6z"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.2"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ===== 1. HEADER ===== -->
+  <header class="site-header" id="top">
+    <div class="container site-header__inner">
+      <a class="brand" href="#top" aria-label="Addmore, back to top">
+        <!-- PLACEHOLDER: replace this SVG logo mark (and the text wordmark) with the final Addmore logo -->
+        <svg class="brand__mark" aria-hidden="true" focusable="false"><use href="#logo"></use></svg>
+        <span class="brand__name">Add<span class="brand__more">more</span></span>
+      </a>
+
+      <nav class="nav" id="primary-nav" aria-label="Main">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="#features">Features</a></li>
+          <li><a class="nav__link" href="#how">How it works</a></li>
+          <li><a class="nav__link" href="#local">Who it&rsquo;s for</a></li>
+          <li><a class="nav__link" href="#pricing">Pricing</a></li>
+          <li><a class="nav__link" href="#faq">FAQ</a></li>
+          <!-- PLACEHOLDER: point "Log in" at the real login page -->
+          <li class="nav__item--mobile"><a class="nav__link" href="#">Log in</a></li>
+          <li class="nav__item--mobile nav__item--mobile--cta"><a class="btn btn--primary" href="#start">Start free</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-header__actions">
+        <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false">
+          <svg class="icon theme-toggle__moon" aria-hidden="true" focusable="false"><use href="#i-moon"></use></svg>
+          <svg class="icon theme-toggle__sun" aria-hidden="true" focusable="false"><use href="#i-sun"></use></svg>
+        </button>
+        <!-- PLACEHOLDER: point "Log in" at the real login page -->
+        <a class="login-link" href="#">Log in</a>
+        <a class="btn btn--primary header-cta" href="#start">Start free</a>
+        <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu">
+          <svg class="icon menu-toggle__open" aria-hidden="true" focusable="false"><use href="#i-menu"></use></svg>
+          <svg class="icon menu-toggle__close" aria-hidden="true" focusable="false"><use href="#i-x"></use></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== 2. HERO ===== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero__grid">
+        <div class="hero__copy">
+          <p class="section__eyebrow">Asset management for South African organisations</p>
+          <h1 id="hero-title">Know <span class="hero__mark">where every asset</span> is.</h1>
+          <p class="hero__lead">Give every laptop, tool and vehicle its own tag, scan it with any phone, and always know who has it and where it is.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg" href="#start">Start free</a>
+            <a class="btn btn--ghost btn--lg" href="#how">See how it works</a>
+          </div>
+          <ul class="trust" aria-label="Why people choose Addmore">
+            <li>Built in South Africa</li>
+            <li>Prices in Rands</li>
+            <li>Works on any phone</li>
+          </ul>
+        </div>
+
+        <div class="hero__visual">
+          <span class="tag-chip tag-chip--lg hero__tag" aria-hidden="true">ADM-VH-0004</span>
+
+          <!-- Dashboard mockup. PLACEHOLDER: all figures and rows are illustrative sample data -->
+          <div class="mock" role="img" aria-label="Addmore dashboard: 1,284 assets in total, with a table of laptops, monitors and tools, each marked Active, Assigned or In repair.">
+            <div class="mock__bar">
+              <span class="mock__dot"></span><span class="mock__dot"></span><span class="mock__dot"></span>
+              <div class="mock__tabs"><span class="is-current">Assets</span><span>People</span><span>Reports</span></div>
+            </div>
+            <div class="mock__stats">
+              <div class="stat"><span class="stat__label">Total assets</span><span class="stat__value">1,284</span></div>
+              <div class="stat"><span class="stat__label">Active</span><span class="stat__value">1,031</span></div>
+              <div class="stat"><span class="stat__label">Assigned</span><span class="stat__value">218</span></div>
+              <div class="stat"><span class="stat__label">In repair</span><span class="stat__value">27</span></div>
+            </div>
+            <table class="mock__table">
+              <thead><tr><th>Tag</th><th>Asset</th><th>Status</th><th class="col-price">Price</th></tr></thead>
+              <tbody>
+                <tr><td><span class="tag-chip">ADM-LT-0042</span></td><td>Dell Latitude 5440</td><td><span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span></td><td class="col-price price">R&nbsp;18,950.00</td></tr>
+                <tr><td><span class="tag-chip">ADM-MN-0017</span></td><td>Samsung 27&Prime; monitor</td><td><span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Active</span></td><td class="col-price price">R&nbsp;3,299.00</td></tr>
+                <tr><td><span class="tag-chip">ADM-TL-0033</span></td><td>Makita cordless drill</td><td><span class="status status--repair"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wrench"></use></svg>In repair</span></td><td class="col-price price">R&nbsp;2,199.00</td></tr>
+                <tr><td><span class="tag-chip">ADM-PH-0008</span></td><td>Samsung Galaxy A54</td><td><span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span></td><td class="col-price price">R&nbsp;7,999.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Phone mockup: scan screen -->
+          <div class="phone" role="img" aria-label="Phone scan screen: an asset tag has been scanned and shows Dell Latitude 5440, Pretoria Office, Assigned, with a green Scan confirmed tick.">
+            <div class="phone__screen">
+              <div class="phone__top"><span>9:41</span><span>Addmore</span></div>
+              <p class="phone__title">Scan asset tag</p>
+              <div class="phone__viewfinder">
+                <svg class="qr phone__qr" aria-hidden="true" focusable="false"><use href="#qr"></use></svg>
+                <span class="phone__corner phone__corner--tl"></span>
+                <span class="phone__corner phone__corner--tr"></span>
+                <span class="phone__corner phone__corner--bl"></span>
+                <span class="phone__corner phone__corner--br"></span>
+                <span class="phone__scanline"></span>
+              </div>
+              <div class="phone__result">
+                <span class="tag-chip">ADM-LT-0042</span>
+                <span class="phone__name">Dell Latitude 5440</span>
+                <span class="phone__meta">Pretoria Office</span>
+                <span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span>
+              </div>
+              <div class="phone__ok">
+                <svg class="tick" viewBox="0 0 26 26" aria-hidden="true" focusable="false"><circle class="tick__ring" cx="13" cy="13" r="11"></circle><path class="tick__check" d="M7.5 13.5l3.7 3.7 7.3-8"></path></svg>
+                Scan confirmed
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 3. SOCIAL PROOF STRIP ===== -->
+    <section class="proof" aria-label="Who uses Addmore">
+      <div class="container">
+        <!-- PLACEHOLDER: this line and the logos below are placeholder content. Replace with real client logos (with permission) or remove the strip. -->
+        <p class="proof__title">Trusted by schools, clinics and growing businesses</p>
+        <ul class="proof__logos">
+          <li class="proof__logo">Client logo</li>
+          <li class="proof__logo">Client logo</li>
+          <li class="proof__logo">Client logo</li>
+          <li class="proof__logo">Client logo</li>
+          <li class="proof__logo">Client logo</li>
+        </ul>
+        <p class="proof__note">Placeholder content: swap in real clients before launch.</p>
+      </div>
+    </section>
+
+    <!-- ===== 4. PROBLEM AND SOLUTION ===== -->
+    <section class="section" id="problem" aria-labelledby="problem-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow">Sound familiar?</p>
+          <h2 id="problem-title">Stop chasing equipment around the office</h2>
+          <p class="section__lead">Most organisations don&rsquo;t lose assets on purpose. They just have no simple way to keep track.</p>
+        </div>
+        <div class="pairs">
+          <article class="card pair reveal">
+            <div class="pair__problem">
+              <p class="pair__label pair__label--problem"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-alert"></use></svg>The problem</p>
+              <h3>Lost equipment</h3>
+              <p>A projector goes missing and nobody remembers who had it last.</p>
+            </div>
+            <div class="pair__answer">
+              <p class="pair__label pair__label--answer"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>With Addmore</p>
+              <p>Every asset has its own tag and a last-known location, so you can find it in seconds.</p>
+            </div>
+          </article>
+          <article class="card pair reveal reveal--d1">
+            <div class="pair__problem">
+              <p class="pair__label pair__label--problem"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-alert"></use></svg>The problem</p>
+              <h3>Messy spreadsheets</h3>
+              <p>Three versions of the same file, and none of them are right.</p>
+            </div>
+            <div class="pair__answer">
+              <p class="pair__label pair__label--answer"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>With Addmore</p>
+              <p>One central register that your whole team updates, with the same fields every time.</p>
+            </div>
+          </article>
+          <article class="card pair reveal reveal--d2">
+            <div class="pair__problem">
+              <p class="pair__label pair__label--problem"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-alert"></use></svg>The problem</p>
+              <h3>No accountability</h3>
+              <p>Equipment changes hands and nobody writes it down.</p>
+            </div>
+            <div class="pair__answer">
+              <p class="pair__label pair__label--answer"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>With Addmore</p>
+              <p>Every asset has an assigned person and a history of who had it and when.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. FEATURES BENTO ===== -->
+    <section class="section section--alt" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow">Features</p>
+          <h2 id="features-title">Everything you need to keep track, and nothing you don&rsquo;t</h2>
+          <p class="section__lead">Addmore does a few things and does them well. No training course required.</p>
+        </div>
+
+        <div class="bento">
+          <!-- Illustrative sample rows in the cards below -->
+          <article class="card bento__card bento__card--s7 reveal">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-table"></use></svg></span>
+            <h3>One central asset register</h3>
+            <p>Every laptop, monitor, phone, chair, tool and vehicle in one list. Each asset has a tag number, name, category, location, assigned user, status, purchase date, price in Rands, supplier, invoice number and photo.</p>
+            <div class="bento__visual mini-rows" aria-hidden="true">
+              <div class="mini-row"><span class="tag-chip">ADM-LT-0042</span><span class="mini-row__name">Dell Latitude 5440</span><span class="status status--assigned"><svg class="icon" focusable="false"><use href="#i-user"></use></svg>Assigned</span></div>
+              <div class="mini-row"><span class="tag-chip">ADM-FN-0121</span><span class="mini-row__name">Ergonomic office chair</span><span class="status status--active"><svg class="icon" focusable="false"><use href="#i-check-circle"></use></svg>Active</span></div>
+              <div class="mini-row"><span class="tag-chip">ADM-VH-0004</span><span class="mini-row__name">Toyota Hilux 2.4 GD-6</span><span class="status status--assigned"><svg class="icon" focusable="false"><use href="#i-user"></use></svg>Assigned</span></div>
+            </div>
+          </article>
+
+          <article class="card bento__card bento__card--s5 reveal reveal--d1">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tag"></use></svg></span>
+            <h3>Scan a tag, see the asset</h3>
+            <p>Each asset gets a unique tag number and a QR code or barcode. Point any phone at it to open the asset, assign it or update its status.</p>
+            <div class="bento__visual scan-demo" aria-hidden="true">
+              <svg class="qr scan-demo__qr" focusable="false"><use href="#qr"></use></svg>
+              <div class="scan-demo__text"><span class="tag-chip">ADM-LT-0042</span><span>Scan to open this asset</span></div>
+            </div>
+          </article>
+
+          <article class="card bento__card bento__card--s4 reveal">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-users"></use></svg></span>
+            <h3>Your whole team, their own logins</h3>
+            <p>Invite as many people as you need. Each person gets their own login and a role that fits their job.</p>
+            <dl class="bento__visual roles" aria-label="Example roles">
+              <div class="roles__item"><dt class="roles__name">Owner</dt><dd class="roles__desc">Full control</dd></div>
+              <div class="roles__item"><dt class="roles__name">Manager</dt><dd class="roles__desc">Adds and edits assets</dd></div>
+              <div class="roles__item"><dt class="roles__name">Staff</dt><dd class="roles__desc">Scans and updates</dd></div>
+              <div class="roles__item"><dt class="roles__name">Viewer</dt><dd class="roles__desc">Read only</dd></div>
+            </dl>
+          </article>
+
+          <article class="card bento__card bento__card--s4 reveal reveal--d1">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-sliders"></use></svg></span>
+            <h3>The right fields for each asset type</h3>
+            <p>A laptop needs a serial number. A vehicle needs a registration. Add the fields that matter for each type.</p>
+            <div class="bento__visual fieldset-demo" aria-hidden="true">
+              <div><p class="fieldset-demo__type">Laptop</p><div class="fieldset-demo__pills"><span class="pill">Serial number</span><span class="pill">Warranty ends</span></div></div>
+              <div><p class="fieldset-demo__type">Vehicle</p><div class="fieldset-demo__pills"><span class="pill">Registration</span><span class="pill">Licence disc expiry</span><span class="pill">Next service</span></div></div>
+            </div>
+          </article>
+
+          <article class="card bento__card bento__card--s4 reveal reveal--d2">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clock"></use></svg></span>
+            <h3>Assignment and history</h3>
+            <p>See who has each asset and everything that has happened to it, from the day it was added.</p>
+            <ol class="bento__visual timeline" aria-label="Example history for one asset">
+              <li class="timeline__item"><strong>Assigned to Thandi M.</strong><span>12 Aug</span></li>
+              <li class="timeline__item"><strong>Moved to Pretoria Office</strong><span>3 Jun</span></li>
+              <li class="timeline__item"><strong>Added to the register</strong><span>14 Feb</span></li>
+            </ol>
+          </article>
+
+          <article class="card bento__card bento__card--s4 reveal">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wrench"></use></svg></span>
+            <h3>Repairs and status</h3>
+            <p>Mark an item In repair when it goes to the workshop, and Active again when it&rsquo;s back. Nothing slips through the cracks.</p>
+            <div class="bento__visual status-list" aria-label="Asset statuses">
+              <span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Active</span>
+              <span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span>
+              <span class="status status--repair"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wrench"></use></svg>In repair</span>
+              <span class="status status--lost"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"></use></svg>Lost</span>
+            </div>
+          </article>
+
+          <article class="card bento__card bento__card--s4 reveal reveal--d1">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg></span>
+            <h3>Reports and CSV export</h3>
+            <p>See what you own by category, location or person, and export it to CSV for your accountant or auditor.</p>
+            <div class="bento__visual" aria-hidden="true">
+              <div class="bars"><span class="bars__bar bars__bar--1"></span><span class="bars__bar bars__bar--2"></span><span class="bars__bar bars__bar--3"></span><span class="bars__bar bars__bar--4"></span><span class="bars__bar bars__bar--5"></span></div>
+              <div class="bars__caption"><span>Assets by category</span><span class="pill"><svg class="icon" focusable="false"><use href="#i-download"></use></svg> Export CSV</span></div>
+            </div>
+          </article>
+
+          <article class="card bento__card bento__card--dark bento__card--s4 reveal reveal--d2">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wifi"></use></svg></span>
+            <h3>Keeps working when the signal drops</h3>
+            <p>Scan and update assets without a connection. Addmore syncs when the signal is back. It works in any browser on your phone.</p>
+            <div class="bento__visual sync-demo" aria-label="Offline changes sync when back online">
+              <span class="status status--repair"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clock"></use></svg>3 waiting to sync</span>
+              <svg class="icon sync-demo__arrow" aria-hidden="true" focusable="false"><use href="#i-arrow"></use></svg>
+              <span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Synced</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 6. HOW IT WORKS ===== -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow">How it works</p>
+          <h2 id="how-title">Up and running in four simple steps</h2>
+        </div>
+        <ol class="steps">
+          <li class="step reveal">
+            <span class="step__num">01</span>
+            <div class="step__art">
+              <svg class="ill" viewBox="0 0 160 110" role="img" aria-label="A sign-up form with a profile picture and a button">
+                <rect class="ill__box" x="16" y="10" width="128" height="90" rx="10"></rect>
+                <path class="ill__line" d="M16 30h128"></path>
+                <circle class="ill__dot" cx="27" cy="20" r="3"></circle><circle class="ill__dot" cx="37" cy="20" r="3"></circle>
+                <circle class="ill__pri" cx="48" cy="52" r="9"></circle>
+                <rect class="ill__field" x="64" y="46" width="60" height="6" rx="3"></rect>
+                <rect class="ill__field" x="64" y="58" width="40" height="6" rx="3"></rect>
+                <rect class="ill__pri" x="30" y="76" width="48" height="14" rx="7"></rect>
+              </svg>
+            </div>
+            <h3>Sign up</h3>
+            <p>Create your free account and invite your team. Everyone gets their own login and role.</p>
+          </li>
+          <li class="step reveal reveal--d1">
+            <span class="step__num">02</span>
+            <div class="step__art">
+              <svg class="ill" viewBox="0 0 160 110" role="img" aria-label="A laptop beside an asset card with a plus button">
+                <rect class="ill__box" x="12" y="30" width="72" height="46" rx="6"></rect>
+                <path class="ill__line" d="M6 86h84"></path>
+                <rect class="ill__field" x="22" y="40" width="30" height="5" rx="2.5"></rect>
+                <rect class="ill__field" x="22" y="52" width="48" height="5" rx="2.5"></rect>
+                <rect class="ill__field" x="22" y="64" width="20" height="5" rx="2.5"></rect>
+                <rect class="ill__box" x="98" y="16" width="52" height="68" rx="8"></rect>
+                <rect class="ill__tag" x="106" y="26" width="36" height="12" rx="3"></rect>
+                <rect class="ill__field" x="106" y="46" width="36" height="5" rx="2.5"></rect>
+                <rect class="ill__field" x="106" y="57" width="24" height="5" rx="2.5"></rect>
+                <circle class="ill__acc" cx="140" cy="84" r="12"></circle>
+                <path class="ill__plus" d="M140 78v12M134 84h12"></path>
+              </svg>
+            </div>
+            <h3>Add assets</h3>
+            <p>Log each asset with its name, category, location, price, supplier and a photo. Addmore gives it a unique tag number.</p>
+          </li>
+          <li class="step reveal reveal--d2">
+            <span class="step__num">03</span>
+            <div class="step__art">
+              <svg class="ill" viewBox="0 0 160 110" role="img" aria-label="A sheet of six QR code tag labels ready to print">
+                <rect class="ill__box" x="30" y="6" width="100" height="98" rx="6"></rect>
+                <rect class="ill__tag" x="40" y="14" width="38" height="26" rx="3"></rect>
+                <rect class="ill__tag" x="82" y="14" width="38" height="26" rx="3"></rect>
+                <rect class="ill__tag" x="40" y="44" width="38" height="26" rx="3"></rect>
+                <rect class="ill__tag" x="82" y="44" width="38" height="26" rx="3"></rect>
+                <rect class="ill__tag" x="40" y="74" width="38" height="26" rx="3"></rect>
+                <rect class="ill__tag" x="82" y="74" width="38" height="26" rx="3"></rect>
+                <use class="ill__qr ill__qr--tag" href="#qr" x="45" y="18" width="18" height="18"></use>
+                <use class="ill__qr ill__qr--tag" href="#qr" x="87" y="18" width="18" height="18"></use>
+                <use class="ill__qr ill__qr--tag" href="#qr" x="45" y="48" width="18" height="18"></use>
+                <use class="ill__qr ill__qr--tag" href="#qr" x="87" y="48" width="18" height="18"></use>
+                <use class="ill__qr ill__qr--tag" href="#qr" x="45" y="78" width="18" height="18"></use>
+                <use class="ill__qr ill__qr--tag" href="#qr" x="87" y="78" width="18" height="18"></use>
+              </svg>
+            </div>
+            <h3>Print and stick tags</h3>
+            <p>Print your QR code tags, such as ADM-LT-0042, and stick one on each item.</p>
+          </li>
+          <li class="step reveal reveal--d3">
+            <span class="step__num">04</span>
+            <div class="step__art">
+              <svg class="ill" viewBox="0 0 160 110" role="img" aria-label="A phone scanning a QR code, with a green tick">
+                <rect class="ill__box" x="48" y="4" width="64" height="102" rx="12"></rect>
+                <use class="ill__qr" href="#qr" x="62" y="18" width="36" height="36"></use>
+                <path class="ill__scan" d="M58 36h44"></path>
+                <circle class="ill__ok" cx="80" cy="82" r="13"></circle>
+                <path class="ill__check" d="M73 82l5 5 9-10"></path>
+              </svg>
+            </div>
+            <h3>Scan and track</h3>
+            <p>Scan with a phone to see the asset, assign it, update its status or log a repair.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== 7. BUILT FOR SOUTH AFRICAN ORGANISATIONS ===== -->
+    <section class="section section--alt" id="local" aria-labelledby="local-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow">Who it&rsquo;s for</p>
+          <h2 id="local-title">Built for South African organisations</h2>
+          <p class="section__lead">Addmore is made for the way local schools, clinics and businesses actually work.</p>
+        </div>
+
+        <div class="facts">
+          <article class="card fact reveal">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tag"></use></svg></span>
+            <h3>Everything in Rands</h3>
+            <p>Purchase prices and plan prices are shown in Rands (R). No dollar conversions.</p>
+          </article>
+          <article class="card fact reveal reveal--d1">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-receipt"></use></svg></span>
+            <h3>VAT-ready fields</h3>
+            <p>Record the price, VAT amount, supplier and invoice number against each asset, ready for your accountant.</p>
+          </article>
+          <article class="card fact reveal reveal--d2">
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wifi"></use></svg></span>
+            <h3>Load-shedding friendly</h3>
+            <p>Keep scanning when the power or signal drops. Your changes sync when you&rsquo;re back online.</p>
+          </article>
+        </div>
+
+        <div class="tabs" id="usecases">
+          <div class="tabs__list" role="tablist" aria-label="Who uses Addmore">
+            <button class="tabs__tab" role="tab" type="button" id="tab-schools" aria-controls="panel-schools" aria-selected="true"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-school"></use></svg>Schools</button>
+            <button class="tabs__tab" role="tab" type="button" id="tab-clinics" aria-controls="panel-clinics" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-clinic"></use></svg>Clinics</button>
+            <button class="tabs__tab" role="tab" type="button" id="tab-municipalities" aria-controls="panel-municipalities" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-landmark"></use></svg>Municipalities</button>
+            <button class="tabs__tab" role="tab" type="button" id="tab-smes" aria-controls="panel-smes" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-briefcase"></use></svg>Small businesses</button>
+            <button class="tabs__tab" role="tab" type="button" id="tab-contractors" aria-controls="panel-contractors" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-truck"></use></svg>Contractors</button>
+          </div>
+
+          <div class="tabs__panel" role="tabpanel" id="panel-schools" aria-labelledby="tab-schools">
+            <div>
+              <h3>Schools</h3>
+              <p>Know which laptops, projectors and tablets are in which classroom, and which teacher is responsible for them. Keep sports kit and lab equipment on the same list.</p>
+            </div>
+            <div class="tabs__tags" aria-label="Example tag numbers"><span class="tag-chip">ADM-LT-0101</span><span class="tag-chip">ADM-PJ-0012</span><span class="tag-chip">ADM-SP-0045</span></div>
+          </div>
+          <div class="tabs__panel" role="tabpanel" id="panel-clinics" aria-labelledby="tab-clinics">
+            <div>
+              <h3>Clinics</h3>
+              <p>Keep a record of equipment, computers and furniture across rooms and branches. Log repairs so you can see what is out of use and for how long.</p>
+            </div>
+            <div class="tabs__tags" aria-label="Example tag numbers"><span class="tag-chip">ADM-MD-0007</span><span class="tag-chip">ADM-PC-0023</span><span class="tag-chip">ADM-FN-0066</span></div>
+          </div>
+          <div class="tabs__panel" role="tabpanel" id="panel-municipalities" aria-labelledby="tab-municipalities">
+            <div>
+              <h3>Municipalities</h3>
+              <p>Register equipment across depots and offices, assign it to staff and departments, and keep a clear trail for when audit time comes.</p>
+            </div>
+            <div class="tabs__tags" aria-label="Example tag numbers"><span class="tag-chip">ADM-VH-0031</span><span class="tag-chip">ADM-TL-0208</span><span class="tag-chip">ADM-LT-0455</span></div>
+          </div>
+          <div class="tabs__panel" role="tabpanel" id="panel-smes" aria-labelledby="tab-smes">
+            <div>
+              <h3>Small businesses</h3>
+              <p>Laptops, phones and furniture in one list. When someone joins or leaves, hand over and take back equipment with a clear record.</p>
+            </div>
+            <div class="tabs__tags" aria-label="Example tag numbers"><span class="tag-chip">ADM-LT-0042</span><span class="tag-chip">ADM-PH-0008</span><span class="tag-chip">ADM-MN-0017</span></div>
+          </div>
+          <div class="tabs__panel" role="tabpanel" id="panel-contractors" aria-labelledby="tab-contractors">
+            <div>
+              <h3>Contractors</h3>
+              <p>Tools and vehicles move between sites every week. Scan them in and out so you always know which site has what.</p>
+            </div>
+            <div class="tabs__tags" aria-label="Example tag numbers"><span class="tag-chip">ADM-TL-0033</span><span class="tag-chip">ADM-VH-0004</span><span class="tag-chip">ADM-TL-0090</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 8. INTERACTIVE DEMO ===== -->
+    <section class="section" id="demo" aria-labelledby="demo-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow">Try it</p>
+          <h2 id="demo-title">Find any asset in seconds</h2>
+          <p class="section__lead">Search by tag number or name, or filter by status. This is sample data, so have a play.</p>
+        </div>
+
+        <div class="demo reveal">
+          <div class="demo__controls">
+            <div class="demo__search">
+              <label class="field__label" for="demo-search">Search by tag number or name</label>
+              <input class="field__input" id="demo-search" type="search" placeholder="For example, ADM-LT-0042" autocomplete="off">
+            </div>
+            <div class="demo__filters" role="group" aria-label="Filter by status">
+              <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+              <button class="chip" type="button" data-filter="active" aria-pressed="false">Active</button>
+              <button class="chip" type="button" data-filter="assigned" aria-pressed="false">Assigned</button>
+              <button class="chip" type="button" data-filter="repair" aria-pressed="false">In repair</button>
+              <button class="chip" type="button" data-filter="lost" aria-pressed="false">Lost or retired</button>
+            </div>
+          </div>
+
+          <p class="demo__count" id="demo-count" role="status" aria-live="polite">Showing all 10 assets</p>
+
+          <div class="demo__scroll">
+            <!-- PLACEHOLDER: sample data. Names, locations and prices are made up for illustration -->
+            <table class="demo__table" id="demo-table">
+              <caption class="visually-hidden">Sample asset register</caption>
+              <thead>
+                <tr><th scope="col">Tag</th><th scope="col">Asset</th><th scope="col" class="col-loc">Location</th><th scope="col" class="col-user">Assigned to</th><th scope="col">Status</th><th scope="col" class="col-price">Price</th></tr>
+              </thead>
+              <tbody>
+                <tr data-status="assigned"><td><span class="tag-chip">ADM-LT-0042</span></td><td><span class="asset__name">Dell Latitude 5440</span><span class="asset__sub">Pretoria Office<span class="sub__price">R&nbsp;18,950.00</span></span></td><td class="col-loc">Pretoria Office</td><td class="col-user">Thandi Mokoena</td><td><span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span></td><td class="col-price price">R&nbsp;18,950.00</td></tr>
+                <tr data-status="active"><td><span class="tag-chip">ADM-LT-0043</span></td><td><span class="asset__name">HP ProBook 450 G10</span><span class="asset__sub">Cape Town Office<span class="sub__price">R&nbsp;14,499.00</span></span></td><td class="col-loc">Cape Town Office</td><td class="col-user">Not assigned</td><td><span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Active</span></td><td class="col-price price">R&nbsp;14,499.00</td></tr>
+                <tr data-status="active"><td><span class="tag-chip">ADM-MN-0017</span></td><td><span class="asset__name">Samsung 27&Prime; monitor</span><span class="asset__sub">Pretoria Office<span class="sub__price">R&nbsp;3,299.00</span></span></td><td class="col-loc">Pretoria Office</td><td class="col-user">Not assigned</td><td><span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Active</span></td><td class="col-price price">R&nbsp;3,299.00</td></tr>
+                <tr data-status="assigned"><td><span class="tag-chip">ADM-PH-0008</span></td><td><span class="asset__name">Samsung Galaxy A54</span><span class="asset__sub">Durban Depot<span class="sub__price">R&nbsp;7,999.00</span></span></td><td class="col-loc">Durban Depot</td><td class="col-user">Sipho Dlamini</td><td><span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span></td><td class="col-price price">R&nbsp;7,999.00</td></tr>
+                <tr data-status="active"><td><span class="tag-chip">ADM-FN-0121</span></td><td><span class="asset__name">Ergonomic office chair</span><span class="asset__sub">Johannesburg Office<span class="sub__price">R&nbsp;2,450.00</span></span></td><td class="col-loc">Johannesburg Office</td><td class="col-user">Not assigned</td><td><span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Active</span></td><td class="col-price price">R&nbsp;2,450.00</td></tr>
+                <tr data-status="repair"><td><span class="tag-chip">ADM-TL-0033</span></td><td><span class="asset__name">Makita cordless drill</span><span class="asset__sub">Site store, Polokwane<span class="sub__price">R&nbsp;2,199.00</span></span></td><td class="col-loc">Site store, Polokwane</td><td class="col-user">Not assigned</td><td><span class="status status--repair"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wrench"></use></svg>In repair</span></td><td class="col-price price">R&nbsp;2,199.00</td></tr>
+                <tr data-status="assigned"><td><span class="tag-chip">ADM-VH-0004</span></td><td><span class="asset__name">Toyota Hilux 2.4 GD-6</span><span class="asset__sub">Pretoria Depot<span class="sub__price">R&nbsp;489,900.00</span></span></td><td class="col-loc">Pretoria Depot</td><td class="col-user">Lerato Khumalo</td><td><span class="status status--assigned"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-user"></use></svg>Assigned</span></td><td class="col-price price">R&nbsp;489,900.00</td></tr>
+                <tr data-status="lost"><td><span class="tag-chip">ADM-LT-0019</span></td><td><span class="asset__name">Lenovo ThinkPad E14</span><span class="asset__sub">Bloemfontein Office<span class="sub__price">R&nbsp;12,300.00</span></span></td><td class="col-loc">Bloemfontein Office</td><td class="col-user">Not assigned</td><td><span class="status status--lost"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"></use></svg>Retired</span></td><td class="col-price price">R&nbsp;12,300.00</td></tr>
+                <tr data-status="active"><td><span class="tag-chip">ADM-PR-0006</span></td><td><span class="asset__name">Epson EcoTank L3250</span><span class="asset__sub">Staff room<span class="sub__price">R&nbsp;3,999.00</span></span></td><td class="col-loc">Staff room</td><td class="col-user">Not assigned</td><td><span class="status status--active"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check-circle"></use></svg>Active</span></td><td class="col-price price">R&nbsp;3,999.00</td></tr>
+                <tr data-status="lost"><td><span class="tag-chip">ADM-PH-0011</span></td><td><span class="asset__name">iPhone SE</span><span class="asset__sub">Durban Depot<span class="sub__price">R&nbsp;8,499.00</span></span></td><td class="col-loc">Durban Depot</td><td class="col-user">Not assigned</td><td><span class="status status--lost"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-x-circle"></use></svg>Lost</span></td><td class="col-price price">R&nbsp;8,499.00</td></tr>
+                <tr class="demo__empty" id="demo-empty" hidden><td colspan="6">No assets match that search. Try a different tag number or clear the filter.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="demo__note">Sample data for illustration only.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 9. PRICING ===== -->
+    <section class="section section--alt" id="pricing" aria-labelledby="pricing-title">
+      <div class="container">
+        <div class="section__head section__head--center">
+          <p class="section__eyebrow">Pricing</p>
+          <h2 id="pricing-title">Simple pricing, in Rands</h2>
+          <p class="section__lead">Start free and upgrade when you need more assets or people.</p>
+        </div>
+
+        <div class="pricing__toggle">
+          <div class="toggle" role="group" aria-label="Billing period">
+            <button class="toggle__btn" type="button" data-billing="monthly" aria-pressed="true">Monthly</button>
+            <button class="toggle__btn" type="button" data-billing="annual" aria-pressed="false">Annual <span class="toggle__badge">2 months free</span></button>
+          </div>
+        </div>
+
+        <!-- PLACEHOLDER: plan names, limits and Rand prices below are placeholders. Replace with your real pricing. -->
+        <div class="plans">
+          <article class="card plan reveal">
+            <div>
+              <h3 class="plan__name">Starter</h3>
+              <p class="plan__for">For trying Addmore with a small team</p>
+            </div>
+            <p class="plan__price"><span class="plan__amount" data-monthly="R&nbsp;0" data-annual="R&nbsp;0">R&nbsp;0</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note" data-monthly="Free to start" data-annual="Free to start">Free to start</p>
+            <ul class="plan__list">
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Up to 25 assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>2 users</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>QR tags and phone scanning</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Standard asset fields</li>
+            </ul>
+            <a class="btn btn--ghost btn--block" href="#start">Start free</a>
+          </article>
+
+          <article class="card plan plan--featured reveal reveal--d1">
+            <span class="plan__badge">Recommended</span>
+            <div>
+              <h3 class="plan__name">Team</h3>
+              <p class="plan__for">For schools, clinics and growing businesses</p>
+            </div>
+            <p class="plan__price"><span class="plan__amount" data-monthly="R&nbsp;349" data-annual="R&nbsp;290">R&nbsp;349</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note" data-monthly="Billed monthly, excl. VAT" data-annual="Billed R&nbsp;3,490 a year, excl. VAT">Billed monthly, excl. VAT</p>
+            <ul class="plan__list">
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Up to 500 assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>10 users with roles</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Custom fields per asset type</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Offline scanning</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Reports and CSV export</li>
+            </ul>
+            <a class="btn btn--primary btn--block" href="#start">Start free</a>
+          </article>
+
+          <article class="card plan reveal reveal--d2">
+            <div>
+              <h3 class="plan__name">Organisation</h3>
+              <p class="plan__for">For larger organisations and municipalities</p>
+            </div>
+            <p class="plan__price"><span class="plan__amount" data-monthly="R&nbsp;899" data-annual="R&nbsp;749">R&nbsp;899</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note" data-monthly="Billed monthly, excl. VAT" data-annual="Billed R&nbsp;8,990 a year, excl. VAT">Billed monthly, excl. VAT</p>
+            <ul class="plan__list">
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Unlimited assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Unlimited users with roles</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Full assignment history</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Priority email support</li>
+            </ul>
+            <a class="btn btn--ghost btn--block" href="#start">Start free</a>
+          </article>
+        </div>
+        <p class="pricing__note">Placeholder plan names and prices. Replace before launch.</p>
+      </div>
+    </section>
+
+    <!-- ===== 10. FAQ ===== -->
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="container">
+        <div class="section__head section__head--center">
+          <p class="section__eyebrow">FAQ</p>
+          <h2 id="faq-title">Questions people ask</h2>
+        </div>
+
+        <div class="faq">
+          <div class="faq__item">
+            <h3><button class="faq__q" type="button" id="faq-q1" aria-expanded="false" aria-controls="faq-a1"><span>How do tag numbers and tags work?</span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"></use></svg></button></h3>
+            <div class="faq__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><p>When you add an asset, Addmore gives it a unique tag number, like ADM-LT-0042, and a matching QR code or barcode. You print the tags on a normal printer, stick one on each item, and scan it any time.</p></div>
+          </div>
+          <div class="faq__item">
+            <h3><button class="faq__q" type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2"><span>Do I need a special scanner?</span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"></use></svg></button></h3>
+            <div class="faq__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><p>No. Any phone with a camera can scan your tags, so there is no extra hardware to buy.</p></div>
+          </div>
+          <div class="faq__item">
+            <h3><button class="faq__q" type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3"><span>What happens when there is no signal or load-shedding?</span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"></use></svg></button></h3>
+            <div class="faq__a" id="faq-a3" role="region" aria-labelledby="faq-q3"><p>Addmore keeps working when the signal drops. You can keep scanning and updating assets, and your changes sync automatically when your phone is back online.</p></div>
+          </div>
+          <div class="faq__item">
+            <h3><button class="faq__q" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4"><span>Can my whole team have their own logins?</span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"></use></svg></button></h3>
+            <div class="faq__a" id="faq-a4" role="region" aria-labelledby="faq-q4"><p>Yes. Invite as many people as your plan allows. Each person gets their own login and a role, such as Owner, Manager, Staff or Viewer, so they only see and do what they should.</p></div>
+          </div>
+          <div class="faq__item">
+            <h3><button class="faq__q" type="button" id="faq-q5" aria-expanded="false" aria-controls="faq-a5"><span>Can I get my data out of Addmore?</span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"></use></svg></button></h3>
+            <div class="faq__a" id="faq-a5" role="region" aria-labelledby="faq-q5"><p>Yes. You can export your asset register to CSV at any time and open it in Excel or Google Sheets, for example when your accountant or auditor asks for a list.</p></div>
+          </div>
+          <div class="faq__item">
+            <h3><button class="faq__q" type="button" id="faq-q6" aria-expanded="false" aria-controls="faq-a6"><span>How much does it cost?</span><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-chevron"></use></svg></button></h3>
+            <!-- PLACEHOLDER: update this answer to match your final pricing -->
+            <div class="faq__a" id="faq-a6" role="region" aria-labelledby="faq-q6"><p>You can start free. Paid plans are priced in Rands and shown excluding VAT, with a discount if you pay annually. See the pricing section above for the current plans.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 11. FINAL CALL TO ACTION ===== -->
+    <section class="cta" id="start" aria-labelledby="cta-title">
+      <div class="container">
+        <div class="cta__inner">
+          <h2 id="cta-title">Know where every asset is, starting today</h2>
+          <p class="cta__lead">Create your free account and add your first asset in minutes.</p>
+
+          <form class="cta__form" id="cta-form" novalidate>
+            <div class="field">
+              <label class="field__label" for="cta-email">Work email</label>
+              <input class="field__input" id="cta-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@yourorganisation.co.za" aria-describedby="cta-msg">
+            </div>
+            <button class="btn btn--accent btn--lg" type="submit">Start free</button>
+          </form>
+          <p class="cta__msg" id="cta-msg" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="cta__tags" aria-hidden="true">
+        <span class="tag-chip tag-chip--lg cta__tag cta__tag--a">ADM-LT-0042</span>
+        <span class="tag-chip tag-chip--lg cta__tag cta__tag--b">ADM-MN-0017</span>
+        <span class="tag-chip tag-chip--lg cta__tag cta__tag--c">ADM-VH-0004</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== 12. FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__about">
+          <a class="brand" href="#top" aria-label="Addmore, back to top">
+            <svg class="brand__mark" aria-hidden="true" focusable="false"><use href="#logo"></use></svg>
+            <span class="brand__name">Add<span class="brand__more">more</span></span>
+          </a>
+          <p>A simple asset register for South African schools, clinics, businesses and municipalities. Tag it, scan it, know where it is.</p>
+        </div>
+
+        <nav aria-label="Product">
+          <p class="footer__title">Product</p>
+          <ul>
+            <li><a class="footer__link" href="#features">Features</a></li>
+            <li><a class="footer__link" href="#how">How it works</a></li>
+            <li><a class="footer__link" href="#pricing">Pricing</a></li>
+            <li><a class="footer__link" href="#faq">FAQ</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Who it's for">
+          <p class="footer__title">Who it&rsquo;s for</p>
+          <ul>
+            <li><a class="footer__link" href="#local">Schools</a></li>
+            <li><a class="footer__link" href="#local">Clinics</a></li>
+            <li><a class="footer__link" href="#local">Municipalities</a></li>
+            <li><a class="footer__link" href="#local">Small businesses</a></li>
+          </ul>
+        </nav>
+
+        <div>
+          <p class="footer__title">Contact</p>
+          <div class="footer__contact">
+            <!-- PLACEHOLDER: replace with your real email address and phone number -->
+            <a class="footer__link" href="mailto:hello@your-domain.co.za">hello@your-domain.co.za</a>
+            <a class="footer__link" href="tel:+27000000000">+27 00 000 0000</a>
+            <!-- PLACEHOLDER: point these at your real privacy policy and terms pages -->
+            <a class="footer__link" href="#">Privacy policy</a>
+            <a class="footer__link" href="#">Terms of use</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p>&copy; <span id="year">2026</span> Addmore. All rights reserved.</p>
+        <p>Made in South Africa</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var root = document.documentElement;
+      function $(selector, scope) { return (scope || document).querySelector(selector); }
+      function $$(selector, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(selector)); }
+
+      /* ---- Theme toggle: localStorage, falling back to the system preference ---- */
+      var THEME_KEY = 'addmore-theme';
+      var themeBtn = $('#theme-toggle');
+      var systemQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+      function storedTheme() {
+        try { return localStorage.getItem(THEME_KEY); } catch (e) { return null; }
+      }
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        if (themeBtn) { themeBtn.setAttribute('aria-pressed', String(theme === 'dark')); }
+      }
+
+      applyTheme(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+
+      if (themeBtn) {
+        themeBtn.addEventListener('click', function () {
+          var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          applyTheme(next);
+          try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        });
+      }
+      if (systemQuery && systemQuery.addEventListener) {
+        systemQuery.addEventListener('change', function (event) {
+          if (!storedTheme()) { applyTheme(event.matches ? 'dark' : 'light'); }
+        });
+      }
+
+      /* ---- Mobile navigation ---- */
+      var menuBtn = $('#menu-toggle');
+      var nav = $('#primary-nav');
+
+      function setMenu(open) {
+        menuBtn.setAttribute('aria-expanded', String(open));
+        menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Menu');
+        nav.classList.toggle('is-open', open);
+      }
+      if (menuBtn && nav) {
+        menuBtn.addEventListener('click', function () {
+          setMenu(menuBtn.getAttribute('aria-expanded') !== 'true');
+        });
+        $$('a', nav).forEach(function (link) {
+          link.addEventListener('click', function () { setMenu(false); });
+        });
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape' && menuBtn.getAttribute('aria-expanded') === 'true') {
+            setMenu(false);
+            menuBtn.focus();
+          }
+        });
+        window.matchMedia('(min-width: 960px)').addEventListener('change', function (event) {
+          if (event.matches) { setMenu(false); }
+        });
+      }
+
+      /* ---- Scroll reveal ---- */
+      var revealItems = $$('.reveal');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        revealItems.forEach(function (item) { observer.observe(item); });
+      } else {
+        revealItems.forEach(function (item) { item.classList.add('is-visible'); });
+      }
+
+      /* ---- Use-case tabs ---- */
+      var tabs = $$('.tabs__tab');
+      var panels = $$('.tabs__panel');
+
+      function selectTab(tab, moveFocus) {
+        tabs.forEach(function (t) {
+          var selected = t === tab;
+          t.setAttribute('aria-selected', String(selected));
+          t.tabIndex = selected ? 0 : -1;
+        });
+        panels.forEach(function (panel) {
+          panel.hidden = panel.id !== tab.getAttribute('aria-controls');
+        });
+        if (moveFocus) { tab.focus(); }
+      }
+      if (tabs.length) {
+        selectTab(tabs[0], false);
+        tabs.forEach(function (tab, index) {
+          tab.addEventListener('click', function () { selectTab(tab, false); });
+          tab.addEventListener('keydown', function (event) {
+            var target = null;
+            if (event.key === 'ArrowRight') { target = tabs[(index + 1) % tabs.length]; }
+            if (event.key === 'ArrowLeft') { target = tabs[(index - 1 + tabs.length) % tabs.length]; }
+            if (event.key === 'Home') { target = tabs[0]; }
+            if (event.key === 'End') { target = tabs[tabs.length - 1]; }
+            if (target) { event.preventDefault(); selectTab(target, true); }
+          });
+        });
+      }
+
+      /* ---- Demo table: search and status filter ---- */
+      var demoTable = $('#demo-table');
+      if (demoTable) {
+        var rows = $$('tbody tr[data-status]', demoTable);
+        var emptyRow = $('#demo-empty');
+        var countEl = $('#demo-count');
+        var searchEl = $('#demo-search');
+        var chips = $$('[data-filter]');
+        var activeStatus = 'all';
+
+        var runFilter = function () {
+          var query = searchEl.value.trim().toLowerCase();
+          var shown = 0;
+          rows.forEach(function (row) {
+            var statusOk = activeStatus === 'all' || row.getAttribute('data-status') === activeStatus;
+            var textOk = !query || row.textContent.toLowerCase().indexOf(query) !== -1;
+            var visible = statusOk && textOk;
+            row.hidden = !visible;
+            if (visible) { shown += 1; }
+          });
+          emptyRow.hidden = shown !== 0;
+          if (shown === rows.length) {
+            countEl.textContent = 'Showing all ' + rows.length + ' assets';
+          } else {
+            countEl.textContent = 'Showing ' + shown + ' of ' + rows.length + ' assets';
+          }
+        };
+
+        searchEl.addEventListener('input', runFilter);
+        chips.forEach(function (chip) {
+          chip.addEventListener('click', function () {
+            activeStatus = chip.getAttribute('data-filter');
+            chips.forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+            runFilter();
+          });
+        });
+      }
+
+      /* ---- Pricing: monthly / annual ---- */
+      var billingBtns = $$('[data-billing]');
+      var priceEls = $$('[data-monthly]');
+
+      function setBilling(mode) {
+        billingBtns.forEach(function (btn) {
+          btn.setAttribute('aria-pressed', String(btn.getAttribute('data-billing') === mode));
+        });
+        priceEls.forEach(function (el) {
+          el.innerHTML = el.getAttribute('data-' + mode);
+        });
+      }
+      billingBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () { setBilling(btn.getAttribute('data-billing')); });
+      });
+
+      /* ---- FAQ accordion ---- */
+      var faqButtons = $$('.faq__q');
+
+      function setFaq(button, open) {
+        button.setAttribute('aria-expanded', String(open));
+        $('#' + button.getAttribute('aria-controls')).hidden = !open;
+      }
+      faqButtons.forEach(function (button, index) {
+        setFaq(button, false);
+        button.addEventListener('click', function () {
+          setFaq(button, button.getAttribute('aria-expanded') !== 'true');
+        });
+        button.addEventListener('keydown', function (event) {
+          var target = null;
+          if (event.key === 'ArrowDown') { target = faqButtons[(index + 1) % faqButtons.length]; }
+          if (event.key === 'ArrowUp') { target = faqButtons[(index - 1 + faqButtons.length) % faqButtons.length]; }
+          if (event.key === 'Home') { target = faqButtons[0]; }
+          if (event.key === 'End') { target = faqButtons[faqButtons.length - 1]; }
+          if (target) { event.preventDefault(); target.focus(); }
+        });
+      });
+
+      /* ---- Email form: front-end validation only ---- */
+      var form = $('#cta-form');
+      if (form) {
+        var emailEl = $('#cta-email');
+        var msgEl = $('#cta-msg');
+        var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        var showMessage = function (text, type) {
+          msgEl.textContent = text;
+          msgEl.classList.toggle('is-error', type === 'error');
+          msgEl.classList.toggle('is-success', type === 'success');
+        };
+
+        emailEl.addEventListener('input', function () {
+          emailEl.removeAttribute('aria-invalid');
+          if (msgEl.classList.contains('is-error')) { showMessage('', ''); }
+        });
+
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          var value = emailEl.value.trim();
+          if (!value) {
+            emailEl.setAttribute('aria-invalid', 'true');
+            showMessage('Please enter your email address.', 'error');
+            emailEl.focus();
+            return;
+          }
+          if (!emailPattern.test(value)) {
+            emailEl.setAttribute('aria-invalid', 'true');
+            showMessage('That email doesn\u2019t look right. Please check it and try again.', 'error');
+            emailEl.focus();
+            return;
+          }
+          emailEl.removeAttribute('aria-invalid');
+          showMessage('Thank you. We\u2019ll email you at ' + value + ' with the next step.', 'success');
+          form.reset();
+        });
+      }
+
+      /* ---- Footer year ---- */
+      var yearEl = $('#year');
+      if (yearEl) { yearEl.textContent = String(new Date().getFullYear()); }
+    })();
+  </script>
+</body>
+</html>
