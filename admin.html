@@ -65,11 +65,19 @@
   </header>
   <main id="main" class="a-main"><div class="container">
     <div class="a-head"><div><h1 style="font-size:clamp(1.75rem,1.4rem + 1.5vw,2.5rem)">Admin console</h1><p>For Addmore staff. Manage businesses and watch usage. Asset data stays with each business.</p></div><div class="a-row"></div></div>
-    <div class="a-stats"><div class="card a-stat"><span>Businesses</span><b id="nb">0</b></div><div class="card a-stat"><span>Assets tracked</span><b id="na">0</b></div></div>
+    <div class="a-stats"><div class="card a-stat"><span>Businesses</span><b id="nb">0</b></div><div class="card a-stat"><span>Assets tracked</span><b id="na">0</b></div><div class="card a-stat"><span>Awaiting approval</span><b id="np">0</b></div><div class="card a-stat"><span>Active alerts</span><b id="nl">0</b></div></div>
     <div class="card a-tw"><table class="a-tbl"><thead><tr><th>Business</th><th>Sector</th><th>Plan</th><th>Assets</th><th>Status</th><th></th></tr></thead><tbody id="biz"></tbody></table></div>
+    <h2 style="margin:1.75rem 0 .75rem">Sector managers</h2>
+    <div class="card a-tw"><table class="a-tbl"><thead><tr><th>Sector</th><th>Assets</th><th>Manager</th></tr></thead><tbody id="sec"></tbody></table></div>
+    <h2 style="margin:1.75rem 0 .75rem">Active alerts</h2>
+    <div class="card"><ul class="a-list" id="al"></ul></div>
+    <h2 style="margin:1.75rem 0 .75rem">Asset usage</h2>
+    <div class="a-tools"><input class="a-search" id="sq" type="search" placeholder="Search by tag, name, person or location" aria-label="Search assets"><select class="a-select" id="sf" aria-label="Sector"><option value="">All sectors</option></select><select class="a-select" id="sv" aria-label="Show"><option value="">All assets</option><option value="p">Awaiting approval</option><option value="a">With alerts</option></select></div>
+    <div class="card a-tw"><table class="a-tbl"><thead><tr><th>Tag</th><th>Asset</th><th>Sector</th><th>Manager</th><th>Status</th><th>Usage</th><th>Actions</th></tr></thead><tbody id="ar"></tbody></table><div class="a-pager" id="pg"></div></div>
   </div></main>
   <div class="a-toast" id="toast" role="status"></div>
   <footer class="site-footer"><div class="container"><div class="footer__bottom" style="margin-top:0;border:0;padding:0"><p>&copy; 2026 Addmore. Greenfield Primary</p><p>Made in South Africa</p></div></div></footer>
   <script src="shared/app.js"></script>
+  <script src="shared/ui.js"></script>
 </body>
 </html>

@@ -103,3 +103,4 @@ body[style*="--bgimg"]::after{content:"";position:fixed;inset:0;z-index:-1;backg
 .lk-lockrow{display:flex;align-items:center;gap:.4rem}.lk-padlock{width:34px;height:34px}.lk-shackle{transition:transform .4s}.lk.turn .lk-shackle{transform:translateY(-4px)}
 .lk-key{width:46px;height:23px;transform:rotate(-24deg);transition:transform .5s;filter:drop-shadow(0 2px 2px #0006)}.lk.turn .lk-key{transform:translate(-30px,0) rotate(-100deg)}
 @media(prefers-reduced-motion:reduce){.lk-door,.lk-key,.lk-shackle{transition:none}}
+.a-mini{min-height:32px;padding:0 .6rem;margin-right:.25rem;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--text);font-size:.8125rem;font-weight:600;transition:background .15s}.a-mini:hover{background:var(--surface-soft)}.a-act{white-space:nowrap}

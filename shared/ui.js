@@ -50,8 +50,8 @@ $('#rows').onclick=function(e){var r=e.target.closest('tr[data-t]');if(r){st.sel
 $('#pg').onclick=function(e){var b=e.target.closest('button');if(b){st.p=+b.dataset.p;tb()}};$('#tb').onclick=function(e){if(e.target.dataset.t){st.tab=e.target.dataset.t;dt()}};
 $('#ac').onclick=function(e){var b=e.target.closest('button'),a=A.filter(function(x){return x.tag===st.sel})[0];if(!b||!a)return;var k=b.dataset.a;
 if(k==='Print tag')return print();
-if(k==='Reassign'){var w=prompt('Assign '+a.tag+' to (leave empty to unassign):',a.who);if(w===null)return;a.who=w.trim();a.st=a.who?'Assigned':'Active';toast(a.tag+(a.who?' assigned to '+a.who:' unassigned'))}
-if(k==='Send to repair'){a.st='In repair';a.who='';toast(a.tag+' sent for repair')}
+if(k==='Reassign'){var o=a.who,w=prompt('Assign '+a.tag+' to (leave empty to unassign):',a.who);if(w===null)return;a.who=w.trim();delete a.ap;a.st=a.who?'Assigned':'Active';AM.log(a,a.who?'Assigned':'Returned',a.who?(prompt('What will '+a.tag+' be used for?','')||''):'',a.who||o);toast(a.tag+(a.who?' assigned to '+a.who:' unassigned'))}
+if(k==='Send to repair'){AM.log(a,'Sent to repair');a.st='In repair';a.who='';toast(a.tag+' sent for repair')}
 if(k==='Retire'){if(!confirm('Retire '+a.tag+'? It will be removed from the register.'))return;A.splice(A.indexOf(a),1);toast(a.tag+' retired')}
 AM.save(A);all()};all()};
 
