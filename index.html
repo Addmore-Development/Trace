@@ -942,7 +942,7 @@ a:hover { color: var(--link-hover); }
           <li><a class="nav__link" href="#pricing">Pricing</a></li>
           <li><a class="nav__link" href="#faq">FAQ</a></li>
           <!-- TEMP: "Log in" opens dashboard.html for testing. Point it at the real login page later -->
-          <li class="nav__item--mobile"><a class="nav__link" href="dashboard.html">Log in</a></li>
+          <li class="nav__item--mobile"><a class="nav__link" href="login.html">Log in</a></li>
           <li class="nav__item--mobile nav__item--mobile--cta"><a class="btn btn--primary" href="#start">Start free</a></li>
         </ul>
       </nav>
@@ -953,7 +953,7 @@ a:hover { color: var(--link-hover); }
           <svg class="icon theme-toggle__sun" aria-hidden="true" focusable="false"><use href="#i-sun"></use></svg>
         </button>
         <!-- TEMP: "Log in" opens dashboard.html for testing. Point it at the real login page later -->
-        <a class="login-link" href="dashboard.html">Log in</a>
+        <a class="login-link" href="login.html">Log in</a>
         <a class="btn btn--primary header-cta" href="#start">Start free</a>
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu">
           <svg class="icon menu-toggle__open" aria-hidden="true" focusable="false"><use href="#i-menu"></use></svg>
@@ -1819,7 +1819,7 @@ a:hover { color: var(--link-hover); }
             return;
           }
           emailEl.removeAttribute('aria-invalid');
-          showMessage('Thank you. We\u2019ll email you at ' + value + ' with the next step.', 'success');
+          window.location.href = 'login.html?mode=signup&email=' + encodeURIComponent(value);
           form.reset();
         });
       }

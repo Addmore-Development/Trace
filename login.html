@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Addmore | Log in</title>
+  <meta name="theme-color" content="#0F1B2D">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Open+Sans:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap">
+  <script>(function(){var r=document.documentElement,t=null;r.classList.add('js');try{t=localStorage.getItem('addmore-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';r.setAttribute('data-theme',t)})();</script>
+  <link rel="stylesheet" href="shared/addmore.css">
+  <link rel="stylesheet" href="shared/app.css">
+  <style>[hidden]{display:none!important}</style>
+</head>
+<body style="--bgimg:url('../images/bg-business.jpg')">
+  <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="logo" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="8" fill="#0B7A87"/>
+      <path d="M16 9v14M9 16h14" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <circle cx="25" cy="7" r="2.5" fill="#E08A1E"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  </svg>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html" aria-label="Addmore home"><svg class="brand__mark" aria-hidden="true" focusable="false"><use href="#logo"></use></svg><span class="brand__name">Add<span class="brand__more">more</span></span></a>
+      <div class="site-header__actions">
+        <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false"><svg class="icon theme-toggle__moon" aria-hidden="true"><use href="#i-moon"></use></svg><svg class="icon theme-toggle__sun" aria-hidden="true"><use href="#i-sun"></use></svg></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="a-main"><div class="container" style="max-width:480px">
+    <div class="a-head"><div><h1 id="ttl" style="font-size:clamp(1.75rem,1.4rem + 1.5vw,2.5rem)">Log in</h1><p id="sub">Welcome back. Pick up where you left off.</p></div></div>
+
+    <form class="card a-form" id="f-in" novalidate>
+      <label class="a-field">Email<input name="email" type="email" autocomplete="email" required></label>
+      <label class="a-field">Password<input name="password" type="password" autocomplete="current-password" required minlength="6"></label>
+      <button class="btn btn--primary" type="submit">Log in</button>
+      <p style="margin:0"><a href="#" id="to-forgot">Forgot your password?</a></p>
+      <p style="margin:0">New to Addmore? <a href="#" id="to-up">Create an account</a></p>
+    </form>
+
+    <form class="card a-form" id="f-up" novalidate hidden>
+      <label class="a-field">Your name<input name="name" autocomplete="name" required></label>
+      <label class="a-field">Organisation name<input name="org" autocomplete="organization" placeholder="e.g. Greenfield Primary"></label>
+      <label class="a-field">Sector<select class="a-select" name="sector"><option>Schools</option><option>Clinics</option><option>Municipalities</option><option selected>Businesses</option></select></label>
+      <label class="a-field">Work email<input name="email" type="email" autocomplete="email" required></label>
+      <label class="a-field">Password (6 or more characters)<input name="password" type="password" autocomplete="new-password" required minlength="6"></label>
+      <button class="btn btn--primary" type="submit">Create account</button>
+      <p style="margin:0;color:var(--muted)">Invited by a team? Use the email address they invited and you will join their organisation. The organisation name is ignored.</p>
+      <p style="margin:0">Already have an account? <a href="#" id="to-in">Log in</a></p>
+    </form>
+
+    <form class="card a-form" id="f-fg" novalidate hidden>
+      <label class="a-field">Email<input name="email" type="email" autocomplete="email" required></label>
+      <button class="btn btn--primary" type="submit">Send reset link</button>
+      <p style="margin:0"><a href="#" id="fg-back">Back to log in</a></p>
+    </form>
+
+    <form class="card a-form" id="f-new" novalidate hidden>
+      <label class="a-field">New password<input name="password" type="password" autocomplete="new-password" required minlength="6"></label>
+      <button class="btn btn--primary" type="submit">Save new password</button>
+    </form>
+
+    <p id="msg" role="status" aria-live="polite" style="margin-top:1rem;font-weight:600"></p>
+  </div></main>
+  <footer class="site-footer"><div class="container"><div class="footer__bottom" style="margin-top:0;border:0;padding:0"><p>&copy; 2026 Addmore</p><p>Made in South Africa</p></div></div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="shared/config.js"></script>
+  <script src="shared/supabase.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var $ = function (s) { return document.querySelector(s); };
+    var root = document.documentElement, msg = $('#msg');
+    var tb = $('#theme-toggle');
+    function setT(t) { root.setAttribute('data-theme', t); tb.setAttribute('aria-pressed', String(t === 'dark')); }
+    setT(root.getAttribute('data-theme') || 'light');
+    tb.onclick = function () { var n = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; setT(n); try { localStorage.setItem('addmore-theme', n); } catch (e) {} };
+
+    function say(t, bad) { msg.textContent = t || ''; msg.style.color = bad ? 'var(--status-lost)' : 'var(--text)'; }
+    function show(id) {
+      ['f-in', 'f-up', 'f-fg', 'f-new'].forEach(function (x) { $('#' + x).hidden = x !== id; });
+      var T = { 'f-in': ['Log in', 'Welcome back. Pick up where you left off.'], 'f-up': ['Create your account', 'Set up your register in a few minutes.'], 'f-fg': ['Reset your password', 'We will email you a link.'], 'f-new': ['Choose a new password', 'Then you are back in.'] }[id];
+      $('#ttl').textContent = T[0]; $('#sub').textContent = T[1]; say('');
+    }
+    $('#to-up').onclick = function (e) { e.preventDefault(); show('f-up'); };
+    $('#to-in').onclick = $('#fg-back').onclick = function (e) { e.preventDefault(); show('f-in'); };
+    $('#to-forgot').onclick = function (e) { e.preventDefault(); show('f-fg'); };
+
+    if (!window.AMDB || !AMDB.sb) { say('Supabase is not configured. Add your anon key to shared/config.js', true); return; }
+    var sb = AMDB.sb, here = function (p) { return new URL(p, location.href).href; };
+    function nice(e) { var m = (e && e.message) || String(e); return /Invalid login/i.test(m) ? 'Wrong email or password.' : /already registered/i.test(m) ? 'That email already has an account. Try logging in.' : m; }
+    function busy(f, on) { f.querySelectorAll('button').forEach(function (b) { b.disabled = on; }); }
+
+    var q = new URLSearchParams(location.search);
+    if (q.get('suspended')) say('This organisation is suspended. Please contact Addmore.', true);
+    if (q.get('mode') === 'signup') { show('f-up'); if (q.get('email')) $('#f-up [name=email]').value = q.get('email'); }
+
+    sb.auth.onAuthStateChange(function (ev) { if (ev === 'PASSWORD_RECOVERY') show('f-new'); });
+    sb.auth.getSession().then(function (r) {
+      if (r.data.session && !/type=recovery/.test(location.hash) && !q.get('suspended')) location.replace('dashboard.html');
+    });
+
+    $('#f-in').onsubmit = function (e) {
+      e.preventDefault(); var f = e.target; busy(f, true); say('Logging in...');
+      sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.password.value }).then(function (r) {
+        if (r.error) throw r.error; location.href = 'dashboard.html';
+      }).catch(function (err) { say(nice(err), true); busy(f, false); });
+    };
+    $('#f-up').onsubmit = function (e) {
+      e.preventDefault(); var f = e.target; busy(f, true); say('Creating your account...');
+      sb.auth.signUp({ email: f.email.value.trim(), password: f.password.value, options: { emailRedirectTo: here('dashboard.html'), data: { full_name: f.name.value.trim(), org_name: f.org.value.trim(), sector: f.sector.value } } }).then(function (r) {
+        if (r.error) throw r.error;
+        if (r.data.session) { location.href = 'dashboard.html'; return; }
+        say('Almost there. Check your email and click the confirmation link.'); busy(f, false);
+      }).catch(function (err) { say(nice(err), true); busy(f, false); });
+    };
+    $('#f-fg').onsubmit = function (e) {
+      e.preventDefault(); var f = e.target; busy(f, true);
+      sb.auth.resetPasswordForEmail(f.email.value.trim(), { redirectTo: here('login.html') }).then(function (r) {
+        if (r.error) throw r.error; say('If that email has an account, a reset link is on its way.'); busy(f, false);
+      }).catch(function (err) { say(nice(err), true); busy(f, false); });
+    };
+    $('#f-new').onsubmit = function (e) {
+      e.preventDefault(); var f = e.target; busy(f, true);
+      sb.auth.updateUser({ password: f.password.value }).then(function (r) {
+        if (r.error) throw r.error; location.href = 'dashboard.html';
+      }).catch(function (err) { say(nice(err), true); busy(f, false); });
+    };
+  })();
+  </script>
+</body>
+</html>

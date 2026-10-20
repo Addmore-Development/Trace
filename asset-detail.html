@@ -58,7 +58,7 @@
       <nav class="nav" id="primary-nav" aria-label="App"><ul class="nav__list"><li><a class="nav__link" href="dashboard.html">Dashboard</a></li><li><a class="nav__link" href="assets.html" aria-current="page">Assets</a></li><li><a class="nav__link" href="asset-new.html">Add asset</a></li><li><a class="nav__link" href="categories.html">Fields</a></li><li><a class="nav__link" href="team.html">Team</a></li><li><a class="nav__link" href="reports.html">Reports</a></li><li><a class="nav__link" href="admin.html">Admin</a></li></ul></nav>
       <div class="site-header__actions">
         <button class="icon-btn theme-toggle" id="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false"><svg class="icon theme-toggle__moon" aria-hidden="true"><use href="#i-moon"></use></svg><svg class="icon theme-toggle__sun" aria-hidden="true"><use href="#i-sun"></use></svg></button>
-        <a class="login-link" href="index.html">Log out</a>
+        <a class="login-link" href="login.html" data-logout>Log out</a>
         <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Menu"><svg class="icon menu-toggle__open" aria-hidden="true"><use href="#i-menu"></use></svg><svg class="icon menu-toggle__close" aria-hidden="true"><use href="#i-x"></use></svg></button>
       </div>
     </div>
@@ -72,6 +72,10 @@
   </div></main>
   <div class="a-toast" id="toast" role="status"></div>
   <footer class="site-footer"><div class="container"><div class="footer__bottom" style="margin-top:0;border:0;padding:0"><p>&copy; 2026 Addmore. Greenfield Primary</p><p>Made in South Africa</p></div></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="shared/config.js"></script>
+  <script src="shared/supabase.js"></script>
   <script src="shared/app.js"></script>
+  <script src="shared/ui.js"></script>
 </body>
 </html>
