@@ -103,20 +103,20 @@
 
     sb.auth.onAuthStateChange(function (ev) { if (ev === 'PASSWORD_RECOVERY') show('f-new'); });
     sb.auth.getSession().then(function (r) {
-      if (r.data.session && !/type=recovery/.test(location.hash) && !q.get('suspended')) location.replace('dashboard.html');
+      if (r.data.session && !/type=recovery/.test(location.hash) && !q.get('suspended')) AMDB.afterLogin(false);
     });
 
     $('#f-in').onsubmit = function (e) {
       e.preventDefault(); var f = e.target; busy(f, true); say('Logging in...');
       sb.auth.signInWithPassword({ email: f.email.value.trim(), password: f.password.value }).then(function (r) {
-        if (r.error) throw r.error; location.href = 'dashboard.html';
+        if (r.error) throw r.error; return AMDB.afterLogin();
       }).catch(function (err) { say(nice(err), true); busy(f, false); });
     };
     $('#f-up').onsubmit = function (e) {
       e.preventDefault(); var f = e.target; busy(f, true); say('Creating your account...');
       sb.auth.signUp({ email: f.email.value.trim(), password: f.password.value, options: { emailRedirectTo: here('dashboard.html'), data: { full_name: f.name.value.trim(), org_name: f.org.value.trim(), sector: f.sector.value } } }).then(function (r) {
         if (r.error) throw r.error;
-        if (r.data.session) { location.href = 'dashboard.html'; return; }
+        if (r.data.session) { return AMDB.afterLogin(); }
         say('Almost there. Check your email and click the confirmation link.'); busy(f, false);
       }).catch(function (err) { say(nice(err), true); busy(f, false); });
     };
@@ -129,7 +129,7 @@
     $('#f-new').onsubmit = function (e) {
       e.preventDefault(); var f = e.target; busy(f, true);
       sb.auth.updateUser({ password: f.password.value }).then(function (r) {
-        if (r.error) throw r.error; location.href = 'dashboard.html';
+        if (r.error) throw r.error; return AMDB.afterLogin();
       }).catch(function (err) { say(nice(err), true); busy(f, false); });
     };
   })();

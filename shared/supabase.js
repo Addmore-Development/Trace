@@ -143,14 +143,25 @@
       return sb.from('invites').insert({ org_id: ORG, email: email.trim().toLowerCase(), role: role, invited_by: UID }).then(chk);
     },
 
-    overview: function () { return sb.rpc('admin_overview').then(chk); },
+    /* True only for Addmore platform admins (public.platform_admins) */
+    isAdmin: function () {
+      return sb.rpc('is_platform_admin').then(function (r) { return !r.error && r.data === true; }, function () { return false; });
+    },
 
-    setOrgStatus: function (id, status) {
-      return sb.from('organisations').update({ status: status }).eq('id', id).select().then(function (r) {
-        var d = chk(r); if (!d || !d.length) throw new Error('Only Addmore staff can suspend or reactivate a business');
+    /* After a successful sign-in: count the login, then send admins to the admin
+       console and everyone else to their dashboard. Pass false to skip counting
+       (used when an existing session is simply being resumed). */
+    afterLogin: function (record) {
+      var counted = record === false ? Promise.resolve() : sb.rpc('record_login').then(function () {}, function () {});
+      return counted.then(function () { return window.AMDB.isAdmin(); }).then(function (admin) {
+        location.href = admin ? 'admin.html' : 'dashboard.html';
       });
     },
 
-    signOut: function () { return sb.auth.signOut().then(function () { location.href = 'login.html'; }); }
+    /* Log out always lands on the public home page */
+    signOut: function () {
+      var home = function () { location.replace('index.html'); };
+      return sb.auth.signOut().then(home, home);
+    }
   };
 })();

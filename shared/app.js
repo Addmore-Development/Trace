@@ -6,7 +6,7 @@ setT(root.getAttribute('data-theme')||'light');
 if(tb)tb.onclick=function(){var n=root.getAttribute('data-theme')==='dark'?'light':'dark';setT(n);try{localStorage.setItem('addmore-theme',n)}catch(e){}};
 var mb=$('#menu-toggle'),nv=$('#primary-nav');
 if(mb)mb.onclick=function(){var o=mb.getAttribute('aria-expanded')!=='true';mb.setAttribute('aria-expanded',String(o));nv.classList.toggle('is-open',o)};
-var ad=$('.nav__list a[href="admin.html"]');if(ad&&!$('.nav__list a[href="manager.html"]')){var li=document.createElement('li');li.innerHTML='<a class="nav__link" href="manager.html"'+(document.body.dataset.page==='manager'?' aria-current="page"':'')+'>Manager</a>';ad.parentNode.parentNode.insertBefore(li,ad.parentNode)}
+var ad=$('.nav__list a[href="approvals.html"]');if(ad&&!$('.nav__list a[href="manager.html"]')){var li=document.createElement('li');li.innerHTML='<a class="nav__link" href="manager.html"'+(document.body.dataset.page==='manager'?' aria-current="page"':'')+'>Manager</a>';ad.parentNode.parentNode.insertBefore(li,ad.parentNode)}
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* Data comes from Supabase (see shared/supabase.js) */
@@ -63,11 +63,7 @@ $('#me').onchange=function(e){me=e.target.value;draw()};
 $('#sq').oninput=function(e){st.q=e.target.value.toLowerCase();st.p=0;tb()};$('#sf').onchange=function(e){st.c=e.target.value;st.p=0;tb()};
 $('#pg').onclick=function(e){var b=e.target.closest('button');if(b){st.p=+b.dataset.p;tb()}};draw()},
 
-admin:function(){var B=[];
-function draw(){$('#biz').innerHTML=B.map(function(b,i){return'<tr><td><strong>'+esc(b[0])+'</strong></td><td>'+esc(b[1])+'</td><td>'+esc(b[2])+'</td><td class="price">'+b[3]+'</td><td>'+(b[4]==='Active'?chip('Active'):chip('Lost').replace('Lost','Suspended'))+'</td><td><button class="btn btn--ghost" data-i="'+i+'">'+(b[4]==='Active'?'Suspend':'Reactivate')+'</button></td></tr>'}).join('')}
-draw();$('#biz').onclick=function(e){var i=e.target.dataset.i;if(i==null)return;var nx=B[i][4]==='Active'?'Suspended':'Active';AMDB.setOrgStatus(B[i][5],nx).then(function(){B[i][4]=nx;draw();toast(B[i][0]+' is now '+nx.toLowerCase())},fail)};
-AMDB.overview().then(function(r){B=r.map(function(o){return[o.name,o.sector,o.plan,Number(o.assets),o.status,o.id]});draw();count($('#nb'),B.length,function(x){return x});count($('#na'),B.reduce(function(s,b){return s+b[3]},0),function(x){return x})},fail);
-/* Sector managers, usage approvals and asset alerts (a sector = an asset category) */
+approvals:function(){/* Sector managers, usage approvals and asset alerts (a sector = an asset category) */
 var MG=D.MG,MN=MGR,st={q:'',c:'',v:'',p:0},PS=8;
 function sv(){save(A)}
 function apc(a){return a.ap==='Declined'?'<span class="status status--lost">Declined</span>':!a.who?'<small style="color:var(--muted)">Not in use</small>':a.ap==='Approved'?'<span class="status status--active">Approved</span>':'<span class="status status--repair">Pending</span>'}
