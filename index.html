@@ -823,7 +823,7 @@ a:hover { color: var(--link-hover); }
   .bento { grid-template-columns: repeat(2, 1fr); }
   .bento__card--s7, .bento__card--s5 { grid-column: span 2; }
   .steps { grid-template-columns: repeat(2, 1fr); }
-  .facts { grid-template-columns: repeat(3, 1fr); }
+  .facts { grid-template-columns: repeat(2, 1fr); }
   .tabs__panel { grid-template-columns: 1.3fr 1fr; padding: 2rem; }
   .demo { padding: 1.75rem; }
   .demo__controls { flex-direction: row; align-items: flex-end; justify-content: space-between; }
@@ -920,6 +920,7 @@ a:hover { color: var(--link-hover); }
     <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
     <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-money" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></symbol>
     <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.2"/></symbol>
   </svg>
 
@@ -1296,7 +1297,7 @@ a:hover { color: var(--link-hover); }
 
         <div class="facts">
           <article class="card fact reveal">
-            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-tag"></use></svg></span>
+            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-money"></use></svg></span>
             <h3>Everything in Rands</h3>
             <p>Purchase prices and plan prices are shown in Rands (R). No dollar conversions.</p>
           </article>
@@ -1304,11 +1305,6 @@ a:hover { color: var(--link-hover); }
             <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-receipt"></use></svg></span>
             <h3>VAT-ready fields</h3>
             <p>Record the price, VAT amount, supplier and invoice number against each asset, ready for your accountant.</p>
-          </article>
-          <article class="card fact reveal reveal--d2">
-            <span class="icon-badge"><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-wifi"></use></svg></span>
-            <h3>Load-shedding friendly</h3>
-            <p>Keep scanning when the power or signal drops. Your changes sync when you&rsquo;re back online.</p>
           </article>
         </div>
 

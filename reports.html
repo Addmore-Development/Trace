@@ -64,7 +64,8 @@
     </div>
   </header>
   <main id="main" class="a-main"><div class="container">
-    <div class="a-head"><div><h1 style="font-size:clamp(1.75rem,1.4rem + 1.5vw,2.5rem)">Reports</h1><p>See where your money and equipment sit.</p></div><div class="a-row"><button class="btn btn--primary" id="csv" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>Download CSV</button></div></div>
+    <div class="a-head"><div><h1 style="font-size:clamp(1.75rem,1.4rem + 1.5vw,2.5rem)">Reports</h1><p>See where your money and equipment sit.</p></div></div>
+    <div class="card" style="margin-bottom:1rem"><div class="a-between"><div><h2>Download report</h2><p style="color:var(--muted)">Pick a department and a month (when the asset was registered), then download.</p></div><div class="a-tools" style="margin:0"><select class="a-select" id="rd" aria-label="Department"><option value="">All departments</option></select><select class="a-select" id="rm" aria-label="Month registered"><option value="">All months</option></select><button class="btn btn--primary" id="csv" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>Download CSV</button><button class="btn btn--ghost" id="pdf" type="button"><svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>Download PDF</button></div></div></div>
     <div class="a-rep">
       <div style="display:grid;gap:1rem;min-width:0">
         <div class="a-kpis a-kpis--3" id="stats"></div>
