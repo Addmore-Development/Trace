@@ -1,4 +1,8 @@
 /* App pages: extends addmore.css (the landing page styles). Only new classes live here. */
+/* Selects were not inheriting the page text colour (addmore.css only resets button and input) */
+select{font:inherit;color:inherit}
+[data-theme="dark"] select,[data-theme="dark"] select option{color:#fff}
+[data-theme="dark"] select option{background:#16263F}
 .a-main{padding-block:2rem 4rem;min-height:70vh}
 .a-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.75rem}
 .a-head p{color:var(--muted);margin-top:.4rem}
