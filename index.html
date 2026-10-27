@@ -17,7 +17,7 @@
   <!-- Fonts: only the weights used on this page -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&amp;family=Montserrat:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
 
   <!-- Runs before first paint: marks JS as available and applies the saved or system theme (no flash) -->
   <script>
@@ -84,8 +84,8 @@
   --hole: var(--surface);
 
   /* Type */
-  --font-head: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-head: "Lato", system-ui, sans-serif;
+  --font-body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Shape and space */
@@ -879,6 +879,18 @@ a:hover { color: var(--link-hover); }
   .phone__scanline { animation: none; top: 50%; }
   .tick__ring, .tick__check { animation: none; stroke-dashoffset: 0; }
 }
+  /* === Addmore type overrides: Lato headings, Montserrat body === */
+:root { --font-head: "Lato", system-ui, sans-serif; --font-body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif; }
+body { font-family: var(--font-body); }
+h1, h2, h3, h4, h5, h6, .footer__title { font-family: var(--font-head) !important; font-weight: 700 !important; }
+  /* === Addmore pricing: five plans === */
+.plans--five .plan__amount { font-size: 2rem; }
+.plans--five .plan__price { flex-wrap: wrap; }
+.plans--five .plan__badge { white-space: nowrap; }
+@media (min-width: 700px) { .plans--five { grid-template-columns: repeat(3, 1fr); max-width: none; align-items: stretch; } }
+@media (min-width: 1100px) { .plans--five { grid-template-columns: repeat(5, 1fr); } }
+  /* === Addmore mobile menu === */
+.js .nav { max-height: calc(100vh - 4.5rem); max-height: calc(100dvh - 4.5rem); overflow-y: auto; overscroll-behavior: contain; }
   </style>
 </head>
 
@@ -1035,22 +1047,6 @@ a:hover { color: var(--link-hover); }
             </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== 3. SOCIAL PROOF STRIP ===== -->
-    <section class="proof" aria-label="Who uses Addmore">
-      <div class="container">
-        <!-- PLACEHOLDER: this line and the logos below are placeholder content. Replace with real client logos (with permission) or remove the strip. -->
-        <p class="proof__title">Trusted by schools, clinics and growing businesses</p>
-        <ul class="proof__logos">
-          <li class="proof__logo">Client logo</li>
-          <li class="proof__logo">Client logo</li>
-          <li class="proof__logo">Client logo</li>
-          <li class="proof__logo">Client logo</li>
-          <li class="proof__logo">Client logo</li>
-        </ul>
-        <p class="proof__note">Placeholder content: swap in real clients before launch.</p>
       </div>
     </section>
 
@@ -1422,66 +1418,81 @@ a:hover { color: var(--link-hover); }
           <p class="section__lead">Start free and upgrade when you need more assets or people.</p>
         </div>
 
-        <div class="pricing__toggle">
-          <div class="toggle" role="group" aria-label="Billing period">
-            <button class="toggle__btn" type="button" data-billing="monthly" aria-pressed="true">Monthly</button>
-            <button class="toggle__btn" type="button" data-billing="annual" aria-pressed="false">Annual <span class="toggle__badge">2 months free</span></button>
-          </div>
-        </div>
+        <div class="plans plans--five">
+          <article class="card plan reveal">
+            <div>
+              <h3 class="plan__name">Free</h3>
+              <p class="plan__for">For trying Addmore</p>
+            </div>
+            <p class="plan__price"><span class="plan__amount">R&nbsp;0</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note">Free to start</p>
+            <ul class="plan__list">
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>25 assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>2 users</li>
+            </ul>
+            <a class="btn btn--ghost btn--block" href="#start">Start free</a>
+          </article>
 
-        <!-- PLACEHOLDER: plan names, limits and Rand prices below are placeholders. Replace with your real pricing. -->
-        <div class="plans">
           <article class="card plan reveal">
             <div>
               <h3 class="plan__name">Starter</h3>
-              <p class="plan__for">For trying Addmore with a small team</p>
+              <p class="plan__for">For small teams getting organised</p>
             </div>
-            <p class="plan__price"><span class="plan__amount" data-monthly="R&nbsp;0" data-annual="R&nbsp;0">R&nbsp;0</span><span class="plan__unit">per month</span></p>
-            <p class="plan__note" data-monthly="Free to start" data-annual="Free to start">Free to start</p>
+            <p class="plan__price"><span class="plan__amount">R&nbsp;299</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note">Excl. VAT</p>
             <ul class="plan__list">
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Up to 25 assets</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>2 users</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>QR tags and phone scanning</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Standard asset fields</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>250 assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>5 users</li>
             </ul>
-            <a class="btn btn--ghost btn--block" href="#start">Start free</a>
+            <a class="btn btn--ghost btn--block" href="#start">Get started</a>
           </article>
 
-          <article class="card plan plan--featured reveal reveal--d1">
+          <article class="card plan plan--featured reveal">
             <span class="plan__badge">Recommended</span>
             <div>
-              <h3 class="plan__name">Team</h3>
+              <h3 class="plan__name">Business</h3>
               <p class="plan__for">For schools, clinics and growing businesses</p>
             </div>
-            <p class="plan__price"><span class="plan__amount" data-monthly="R&nbsp;349" data-annual="R&nbsp;290">R&nbsp;349</span><span class="plan__unit">per month</span></p>
-            <p class="plan__note" data-monthly="Billed monthly, excl. VAT" data-annual="Billed R&nbsp;3,490 a year, excl. VAT">Billed monthly, excl. VAT</p>
+            <p class="plan__price"><span class="plan__amount">R&nbsp;799</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note">Excl. VAT</p>
             <ul class="plan__list">
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Up to 500 assets</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>10 users with roles</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Custom fields per asset type</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Offline scanning</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Reports and CSV export</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>1,500 assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>20 users</li>
             </ul>
-            <a class="btn btn--primary btn--block" href="#start">Start free</a>
+            <a class="btn btn--primary btn--block" href="#start">Get started</a>
           </article>
 
-          <article class="card plan reveal reveal--d2">
+          <article class="card plan reveal">
             <div>
-              <h3 class="plan__name">Organisation</h3>
-              <p class="plan__for">For larger organisations and municipalities</p>
+              <h3 class="plan__name">Professional</h3>
+              <p class="plan__for">For larger organisations</p>
             </div>
-            <p class="plan__price"><span class="plan__amount" data-monthly="R&nbsp;899" data-annual="R&nbsp;749">R&nbsp;899</span><span class="plan__unit">per month</span></p>
-            <p class="plan__note" data-monthly="Billed monthly, excl. VAT" data-annual="Billed R&nbsp;8,990 a year, excl. VAT">Billed monthly, excl. VAT</p>
+            <p class="plan__price"><span class="plan__amount">R&nbsp;1,999</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note">Excl. VAT</p>
             <ul class="plan__list">
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Unlimited assets</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Unlimited users with roles</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Full assignment history</li>
-              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Priority email support</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>10,000 assets</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>50 users</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Multiple sites</li>
             </ul>
-            <a class="btn btn--ghost btn--block" href="#start">Start free</a>
+            <a class="btn btn--ghost btn--block" href="#start">Get started</a>
+          </article>
+
+          <article class="card plan reveal">
+            <div>
+              <h3 class="plan__name">Enterprise</h3>
+              <p class="plan__for">For municipalities and large groups</p>
+            </div>
+            <p class="plan__price"><span class="plan__unit">from</span><span class="plan__amount">R&nbsp;4,500</span><span class="plan__unit">per month</span></p>
+            <p class="plan__note">Excl. VAT</p>
+            <ul class="plan__list">
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Custom limits</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Integrations</li>
+              <li><svg class="icon" aria-hidden="true" focusable="false"><use href="#i-check"></use></svg>Onboarding and SLAs</li>
+            </ul>
+            <a class="btn btn--ghost btn--block" href="mailto:hello@addmore.co.za">Contact us</a>
           </article>
         </div>
-        <p class="pricing__note">Placeholder plan names and prices. Replace before launch.</p>
+        <p class="pricing__note">All prices are per month in Rands, excl. VAT.</p>
       </div>
     </section>
 
@@ -1584,7 +1595,7 @@ a:hover { color: var(--link-hover); }
           <p class="footer__title">Contact</p>
           <div class="footer__contact">
             <!-- PLACEHOLDER: replace with your real email address and phone number -->
-            <a class="footer__link" href="mailto:hello@your-domain.co.za">hello@your-domain.co.za</a>
+            <a class="footer__link" href="mailto:hello@addmore.co.za">hello@addmore.co.za</a>
             <a class="footer__link" href="tel:+27000000000">+27 00 000 0000</a>
             <!-- PLACEHOLDER: point these at your real privacy policy and terms pages -->
             <a class="footer__link" href="#">Privacy policy</a>

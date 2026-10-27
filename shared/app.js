@@ -87,7 +87,7 @@ else{var m=prompt((k==='miss'?'Why is '+a.tag+' missing?':'Why can\u2019t '+a.ta
 a.al={t:k==='miss'?'Missing':'Cannot be used',m:m.trim(),d:new Date().toLocaleDateString('en-ZA')};a.st=k==='miss'?'Lost':'In repair';log(a,k==='miss'?'Reported missing':'Reported unusable',m.trim());a.who='';toast('Alert raised for '+a.tag)}
 sv();all()};all()}
 };
-var fp=$('.footer__bottom p');if(fp)fp.textContent='\u00a9 '+new Date().getFullYear()+' Addmore. '+D.org.name;
+var fp=$('.footer__bottom p');if(fp)fp.textContent='\u00a9 '+new Date().getFullYear()+' Addmore.';
 $$('[data-logout]').forEach(function(l){l.onclick=function(e){e.preventDefault();AMDB.signOut()}});
 window.AM={D:D,LG:LG,fail:fail,A:A,CATS:CATS,P:P,esc:esc,R:R,chip:chip,count:count,toast:toast,nextTag:nextTag,save:save,log:log,seedLog:seedLog,COL:COL,reduce:reduce,$:$,$$:$$};
 });

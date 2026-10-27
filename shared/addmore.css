@@ -48,8 +48,8 @@
   --hole: var(--surface);
 
   /* Type */
-  --font-head: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-head: "Lato", system-ui, sans-serif;
+  --font-body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Shape and space */
@@ -843,3 +843,18 @@ a:hover { color: var(--link-hover); }
   .phone__scanline { animation: none; top: 50%; }
   .tick__ring, .tick__check { animation: none; stroke-dashoffset: 0; }
 }
+
+/* === Addmore type overrides: Lato headings, Montserrat body === */
+:root { --font-head: "Lato", system-ui, sans-serif; --font-body: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif; }
+body { font-family: var(--font-body); }
+h1, h2, h3, h4, h5, h6, .footer__title { font-family: var(--font-head) !important; font-weight: 700 !important; }
+
+/* === Addmore pricing: five plans === */
+.plans--five .plan__amount { font-size: 2rem; }
+.plans--five .plan__price { flex-wrap: wrap; }
+.plans--five .plan__badge { white-space: nowrap; }
+@media (min-width: 700px) { .plans--five { grid-template-columns: repeat(3, 1fr); max-width: none; align-items: stretch; } }
+@media (min-width: 1100px) { .plans--five { grid-template-columns: repeat(5, 1fr); } }
+
+/* === Addmore mobile menu === */
+.js .nav { max-height: calc(100vh - 4.5rem); max-height: calc(100dvh - 4.5rem); overflow-y: auto; overscroll-behavior: contain; }
