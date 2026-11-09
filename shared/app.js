@@ -35,7 +35,7 @@ var P={
 detail:function(){var t=new URLSearchParams(location.search).get('tag'),a=A.filter(function(x){return x.tag===t})[0]||A[0];
 document.title='Addmore | '+a.tag;$('#nm').textContent=a.name;$('#tg').textContent=a.tag;
 var rows=[['Status',chip(a.st)],['Category',cn(a.c)],['Location',esc(a.loc)],['Assigned to',esc(a.who||'Nobody')],['Value','<span class="price">'+R(a.val)+'</span>']];
-Object.keys(a.x||{}).forEach(function(k){if(a.x[k])rows.push([esc(k),esc(a.x[k])])});
+Object.keys(a.x||{}).forEach(function(k){if(k.indexOf('__')!==0&&a.x[k])rows.push([esc(k),esc(a.x[k])])});
 $('#dl').innerHTML=rows.map(function(r){return'<div><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>'}).join('');
 $('#hist').innerHTML=[['Registered','Added to the register by a Manager'],a.who?['Assigned','Handed to '+esc(a.who)]:null,a.st==='In repair'?['Sent for repair','Waiting on the supplier']:null,a.st==='Lost'?['Marked lost','Needs follow-up']:null].filter(Boolean).map(function(h){return'<li><strong>'+h[0]+'</strong><small>'+h[1]+'</small></li>'}).join('');
 $('#pr').onclick=function(){print()}},

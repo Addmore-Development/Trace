@@ -1,4 +1,3 @@
-
 (function () {
   'use strict';
   var CFG = window.AM_CONFIG || {};
@@ -12,10 +11,11 @@
     document.body.appendChild(d);
   }
 
+  var offlineNoLib = !window.supabase && navigator.onLine === false;
   if (!window.supabase || !CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY || /PASTE/i.test(CFG.SUPABASE_ANON_KEY)) {
     console.error('Supabase is not configured. Open shared/config.js and set SUPABASE_URL and SUPABASE_ANON_KEY.');
     window.AMDB = { ready: new Promise(function () {}), configError: true };
-    if (document.body) banner('Supabase is not configured. Add your anon key to shared/config.js');
+    if (document.body && !offlineNoLib) banner('Supabase is not configured. Add your anon key to shared/config.js');
     return;
   }
 
@@ -24,6 +24,15 @@
   });
 
   var ORG = null, UID = null, SNAP = {}, A = [], CATS = {}, D = null, Q = Promise.resolve();
+
+  /* Local copy of the register so the scanner works with no signal */
+  function snap() {
+    try {
+      if (!ORG || !D) return;
+      localStorage.setItem('am-snap-v1', JSON.stringify({ uid: UID, org: ORG, orgName: D.org.name, role: D.me.role, at: Date.now(),
+        cats: Object.keys(CATS).map(function (k) { return { code: k, name: CATS[k].n }; }), assets: A }));
+    } catch (e) { /* storage full or blocked: the scanner just falls back to downloading on demand */ }
+  }
 
   function chk(r) { if (r.error) throw r.error; return r.data; }
   function queue(fn) { var p = Q.then(fn); Q = p.catch(function () {}); return p; }
@@ -82,6 +91,7 @@
         me: { id: UID, name: me.full_name || me.email, role: me.role, orgId: ORG },
         org: org
       };
+      snap();
       return D;
     }).catch(function (e) {
       console.error(e);
@@ -109,7 +119,7 @@
         if (gone.length) jobs.push(sb.from('assets').delete().eq('org_id', ORG).in('tag', gone).select().then(function (r) {
           var d = chk(r); if ((d || []).length < gone.length) throw new Error('You do not have permission to retire assets');
         }));
-        return Promise.all(jobs).catch(function (e) { SNAP = prev; throw e; });
+        return Promise.all(jobs).then(snap, function (e) { SNAP = prev; throw e; });
       });
     },
 
@@ -160,6 +170,7 @@
 
     /* Log out always lands on the public home page */
     signOut: function () {
+      try { localStorage.removeItem('am-snap-v1'); } catch (e) {}
       var home = function () { location.replace('index.html'); };
       return sb.auth.signOut().then(home, home);
     }
